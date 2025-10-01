@@ -3,10 +3,9 @@ import { ClassCell } from './cells.entity';
 import { ClassTitle } from './titles.entity';
 import { ClassMeetingPlace } from './meeting_places.entity';
 import { ClassMeetingDetail } from './meeting_details.entity';
-import { ClassInvited } from './invited.entity';
 import { ClassAttendance } from './attendances.entity';
 
-import {
+import { 
   Entity,
   PrimaryColumn,
   Column,
@@ -59,9 +58,6 @@ export class ClassMeeting {
 
   @OneToOne(() => ClassMeetingDetail, (detail) => detail.meeting)
   meetingDetail?: ClassMeetingDetail;
-
-  @OneToMany(() => ClassInvited, (invited) => invited.meeting)
-  inviteds?: ClassInvited[];
 
   @OneToMany(() => ClassAttendance, (attendance) => attendance.meeting)
   attendances?: ClassAttendance[];

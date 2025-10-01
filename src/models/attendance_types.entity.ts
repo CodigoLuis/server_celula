@@ -1,4 +1,3 @@
-import { ClassUser  } from './users.entity';
 import { ClassAttendance } from './attendances.entity';
 
 import {
@@ -22,10 +21,6 @@ export class ClassAttendanceType {
 
   @Column({ length: 100 })
   description: string;
-
-  @ManyToOne(() => ClassUser , (user) => user.attendanceTypes, { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'user_id' })
-  user: ClassUser ;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

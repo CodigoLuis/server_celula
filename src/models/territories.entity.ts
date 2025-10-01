@@ -1,4 +1,5 @@
 import { ClassUser  } from './users.entity';
+import { ClassCell } from './cells.entity';
 
 import {
   Entity,
@@ -20,4 +21,7 @@ export class ClassTerritory {
 
   @OneToMany(() => ClassUser , (user) => user.territory)
   users?: ClassUser [];
+
+  @OneToMany(() => ClassCell , (cell) => cell.territory)
+  cells?: ClassCell [];
 }

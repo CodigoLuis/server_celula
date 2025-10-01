@@ -1,7 +1,8 @@
 import { ClassCellType } from './cell_types.entity';
 import { ClassUser  } from './users.entity';
-import { ClassCellsUsers } from './cells_users.entity';
+import { ClassCellsPersons } from './cells_users.entity';
 import { ClassMeeting } from './meetings.entity';
+import { ClassTerritory } from './territories.entity';
 
 import {
   Entity,
@@ -36,9 +37,14 @@ export class ClassCell {
   @JoinColumn({ name: 'user_id' })
   user: ClassUser ;
 
-  @OneToMany(() => ClassCellsUsers, (cu) => cu.cell)
-  cellsUsers?: ClassCellsUsers[];
+  @ManyToOne(() => ClassTerritory, (territory) => territory.users, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'territory_id' })
+  territory: ClassTerritory;
+
+  @OneToMany(() => ClassCellsPersons, (cu) => cu.cell)
+  cellsPersons?: ClassCellsPersons[];
 
   @OneToMany(() => ClassMeeting, (meeting) => meeting.cell)
   meetings?: ClassMeeting[];
+
 }

@@ -6,12 +6,11 @@ import { ClassPerson } from './models/persons.entity';
 import { ClassTerritory } from './models/territories.entity';
 import { ClassUserType } from './models/user_types.entity';
 import { ClassCell } from './models/cells.entity';
-import { ClassCellsUsers } from './models/cells_users.entity';
+import { ClassCellsPersons } from './models/cells_users.entity';
 import { ClassTitle } from './models/titles.entity';
 import { ClassMeetingPlace } from './models/meeting_places.entity';
 import { ClassMeeting } from './models/meetings.entity';
 import { ClassAttendanceType } from './models/attendance_types.entity';
-import { ClassInvited } from './models/invited.entity';
 import { ClassAttendance } from './models/attendances.entity';
 import { ClassCellType } from './models/cell_types.entity';
 import { ClassUser } from './models/users.entity';  // Tu entity principal
@@ -35,9 +34,9 @@ import { PersonModule } from './registerPersons/person.module';
       database: process.env.DB_DATABASE || 'reuniones',  // ← AJUSTADO: Usa .env
       entities: [
         ClassPerson, ClassEducation, ClassTerritory, ClassUserType,
-        ClassCell, ClassCellsUsers, ClassTitle,
+        ClassCell, ClassCellsPersons, ClassTitle,
         ClassMeetingPlace, ClassMeeting, ClassAttendanceType,
-        ClassInvited, ClassAttendance, ClassCellType,
+        ClassAttendance, ClassCellType,
         ClassUser, ClassMemberType, ClassMeetingDetail  // ← Incluye ClassUser  y todas
       ],
       synchronize: false,  // ← MANTENIDO: Bueno para prod; pon true solo en dev

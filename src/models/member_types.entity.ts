@@ -1,4 +1,4 @@
-import { ClassCellsUsers } from './cells_users.entity';
+import { ClassCellsPersons } from './cells_users.entity';
 
 import {
   Entity,
@@ -18,6 +18,7 @@ export class ClassMemberType {
   @Column({ length: 150 })
   description: string;
 
-  @OneToMany(() => ClassCellsUsers, (cu) => cu.memberType)
-  cellsUsers?: ClassCellsUsers[];
+  @OneToMany(() => ClassCellsPersons, (cu) => cu.memberType)
+  cellsPersons?: ClassCellsPersons[];
+  
 }

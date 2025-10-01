@@ -1,6 +1,6 @@
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public
----------------------------------------------------
+------------------------------------------- --------
 CREATE TABLE "persons" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "photo" varchar(150),
@@ -12,7 +12,7 @@ CREATE TABLE "persons" (
   "education_level" varchar(50),
   "phone" varchar(15),
   "address" varchar(150),
-  "birth_date" date NOT NULL,
+  "birth_date" date,
   "created_at" timestamp NOT NULL,
   "updated_at" timestamp
 );
@@ -71,9 +71,11 @@ CREATE TABLE "cells" (
   "active" boolean NOT NULL,
   "created_at" timestamp NOT NULL,
   "updated_at" timestamp,
-  "cell_type_id" varchar(2) NOT NULL,
+  "cell_type_id" varchar(2) NOT NULL, 
+  "territory_id" varchar(2) NOT NULL, 
   "user_id" int NOT NULL,
   FOREIGN KEY ("cell_type_id") REFERENCES "cell_types" ("id"),
+  FOREIGN KEY ("territory_id") REFERENCES "territories" ("id"),
   FOREIGN KEY ("user_id") REFERENCES "users" ("id")
 );
 
@@ -83,17 +85,17 @@ CREATE TABLE "member_types" (
   "description" varchar(150) NOT NULL
 );
 
-CREATE TABLE "cells_users" (
+CREATE TABLE "cells_persons" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "active" boolean NOT NULL,
   "created_at" timestamp NOT NULL,
   "updated_at" timestamp,
   "member_type_id" varchar(2) NOT NULL,
   "cell_id" int NOT NULL,
-  "user_id" int NOT NULL,
+  "person_id" int NOT NULL,
   FOREIGN KEY ("member_type_id") REFERENCES "member_types" ("id"),
   FOREIGN KEY ("cell_id") REFERENCES "cells" ("id"),
-  FOREIGN KEY ("user_id") REFERENCES "users" ("id")
+  FOREIGN KEY ("person_id") REFERENCES "persons" ("id")
 );
 
 ------------------------------------------------------------------------------------------------
@@ -154,25 +156,16 @@ CREATE TABLE "attendance_types" (
   "id" varchar(2) UNIQUE PRIMARY KEY NOT NULL,
   "title" varchar(20) NOT NULL,
   "description" varchar(100) NOT NULL,
-  "user_id" int NOT NULL,
   "created_at" timestamp NOT NULL,
-  "updated_at" timestamp,
-  FOREIGN KEY ("user_id") REFERENCES "users" ("id")
-);
-
-CREATE TABLE "invited" (
-  "user_id" int NOT NULL,
-  "meeting_id" varchar(40) NOT NULL,
-  FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
-  FOREIGN KEY ("meeting_id") REFERENCES "meetings" ("id")
+  "updated_at" timestamp
 );
 
 CREATE TABLE "attendances" (
-  "user_id" int NOT NULL,
+  "person_id" int NOT NULL,
   "meeting_id" varchar(40) NOT NULL,
   "attendance_type_id" varchar(2) NOT NULL,
   "attended" boolean,
-  FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
+  FOREIGN KEY ("person_id") REFERENCES "persons" ("id"),
   FOREIGN KEY ("meeting_id") REFERENCES "meetings" ("id"),
   FOREIGN KEY ("attendance_type_id") REFERENCES "attendance_types" ("id")
 );
@@ -205,7 +198,6 @@ INSERT INTO persons (photo, first_name, last_name, gender, marital_status, id_nu
 ('photos/mary_leader12.jpg', 'Mary', 'Leader12', 'Female', 'Married', '1000000002', 'Bachelor', '555-0002', '2 Church St', '1980-02-02', NOW(), NULL),
 ('photos/paul_leader.jpg', 'Paul', 'Leader', 'Male', 'Single', '1000000003', 'Bachelor', '555-0003', '3 Church St', '1990-03-03', NOW(), NULL),
 ('photos/lisa_disciple.jpg', 'Lisa', 'Disciple', 'Female', 'Single', '1000000004', 'High School', '555-0004', '4 Church St', '2000-04-04', NOW(), NULL);
-
 
 
 -- Insert Pastor (top of hierarchy, no leader_id)

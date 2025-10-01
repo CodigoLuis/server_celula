@@ -1,13 +1,15 @@
 import { ClassEducation } from './education.entity';
-import { ClassUser  } from './users.entity';
+import { ClassUser } from './users.entity';
+import { ClassAttendance } from './attendances.entity';
+import { ClassCellsPersons } from './cells_users.entity';
 
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  CreateDateColumn,
+  Entity,
   OneToMany,
   OneToOne,
-  CreateDateColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -43,7 +45,7 @@ export class ClassPerson {
   @Column({ length: 150, nullable: true })
   address?: string;
 
-  @Column({ type: 'date', name: 'birth_date' })
+  @Column({ type: 'date', nullable: true, name: 'birth_date' })
   birthDate: string;
 
   @CreateDateColumn({ name: 'created_at' })
@@ -55,6 +57,13 @@ export class ClassPerson {
   @OneToOne(() => ClassEducation, (education) => education.person)
   education?: ClassEducation;
 
-  @OneToMany(() => ClassUser , (user) => user.person)
-  users?: ClassUser [];
+  @OneToMany(() => ClassUser, (user) => user.person)
+  users?: ClassUser[];
+
+  @OneToMany(() => ClassAttendance, (attendance) => attendance.person)
+  attendances?: ClassAttendance[];
+
+  @OneToMany(() => ClassCellsPersons, (cu) => cu.persons)
+  cellsPersons?: ClassCellsPersons[];
+
 }

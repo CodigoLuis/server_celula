@@ -1,6 +1,6 @@
 import { ClassMeeting } from './meetings.entity';
-import { ClassUser  } from './users.entity';
 import { ClassAttendanceType } from './attendance_types.entity';
+import { ClassPerson } from './persons.entity';
 
 import {
   Entity,
@@ -18,9 +18,9 @@ export class ClassAttendance {
   @PrimaryColumn({ name: 'meeting_id', type: 'varchar', length: 40 })
   meetingId: string;
 
-  @ManyToOne(() => ClassUser , (user) => user.attendances, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
-  user: ClassUser ;
+  @ManyToOne(() => ClassPerson, (person) => person.attendances, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'person_id' })
+  person: ClassPerson;
 
   @ManyToOne(() => ClassMeeting, (meeting) => meeting.attendances, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'meeting_id' })

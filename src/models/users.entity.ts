@@ -2,15 +2,11 @@ import { ClassPerson } from './persons.entity';
 import { ClassTerritory } from './territories.entity';
 import { ClassUserType } from './user_types.entity';
 import { ClassCell } from './cells.entity';
-import { ClassCellsUsers } from './cells_users.entity';
 import { ClassTitle } from './titles.entity';
 import { ClassMeetingPlace } from './meeting_places.entity';
 import { ClassMeeting } from './meetings.entity';
-import { ClassAttendanceType } from './attendance_types.entity';
-import { ClassInvited } from './invited.entity';
-import { ClassAttendance } from './attendances.entity';
 
-import {
+import { 
   Entity,
   PrimaryGeneratedColumn,
   Column,
@@ -66,9 +62,6 @@ export class ClassUser  {
   @OneToMany(() => ClassCell, (cell) => cell.user)
   cells?: ClassCell[];
 
-  @OneToMany(() => ClassCellsUsers, (cu) => cu.user)
-  cellsUsers?: ClassCellsUsers[];
-
   @OneToMany(() => ClassTitle, (title) => title.user)
   titles?: ClassTitle[];
 
@@ -77,13 +70,4 @@ export class ClassUser  {
 
   @OneToMany(() => ClassMeeting, (meeting) => meeting.user)
   meetings?: ClassMeeting[];
-
-  @OneToMany(() => ClassAttendanceType, (at) => at.user)
-  attendanceTypes?: ClassAttendanceType[];
-
-  @OneToMany(() => ClassInvited, (invited) => invited.user)
-  invitations?: ClassInvited[];
-
-  @OneToMany(() => ClassAttendance, (attendance) => attendance.user)
-  attendances?: ClassAttendance[];
 }

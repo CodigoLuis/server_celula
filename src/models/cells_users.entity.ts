@@ -1,6 +1,6 @@
 import { ClassMemberType } from './member_types.entity';
 import { ClassCell } from './cells.entity';
-import { ClassUser  } from './users.entity';
+import { ClassPerson } from './persons.entity';
 
 import {
   Entity,
@@ -12,8 +12,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('cells_users')
-export class ClassCellsUsers {
+@Entity('cells_persons')
+export class ClassCellsPersons {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,15 +26,16 @@ export class ClassCellsUsers {
   @UpdateDateColumn({ name: 'updated_at', nullable: true })
   updatedAt?: Date;
 
-  @ManyToOne(() => ClassMemberType, (memberType) => memberType.cellsUsers, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => ClassMemberType, (memberType) => memberType.cellsPersons, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'member_type_id' })
   memberType: ClassMemberType;
 
-  @ManyToOne(() => ClassCell, (cell) => cell.cellsUsers, { onDelete: 'CASCADE' })
+  @ManyToOne(() => ClassCell, (cell) => cell.cellsPersons, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'cell_id' })
   cell: ClassCell;
 
-  @ManyToOne(() => ClassUser , (user) => user.cellsUsers, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
-  user: ClassUser ;
+  @ManyToOne(() => ClassPerson , (person) => person.cellsPersons, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'person_id' })
+  persons: ClassPerson ;
+
 }
