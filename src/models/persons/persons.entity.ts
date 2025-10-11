@@ -1,7 +1,7 @@
-import { ClassEducation } from './education.entity';
-import { ClassUser } from './users.entity';
-import { ClassAttendance } from './attendances.entity';
-import { ClassCellsPersons } from './cells_users.entity';
+import { ClassEducation } from '../education.entity';
+import { ClassUser } from '../users.entity';
+import { ClassAttendance } from '../attendances.entity';
+import { ClassCellsPersons } from '../cells_users.entity';
 
 import {
   Column,
@@ -17,7 +17,7 @@ import {
 export class ClassPerson {
   @PrimaryGeneratedColumn()
   id: number;
-
+ 
   @Column({ length: 150, nullable: true })
   photo?: string;
 
@@ -33,7 +33,7 @@ export class ClassPerson {
   @Column({ length: 12, nullable: true, name: 'marital_status' })
   maritalStatus?: string;
 
-  @Column({ length: 12, nullable: true, name: 'id_number' })
+  @Column({ length: 12, name: 'id_number' })
   idNumber?: string;
 
   @Column({ length: 50, nullable: true, name: 'education_level' })

@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 // import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';  // ← De authJWT (global)
-import { ClassUser  } from '../models/users.entity';  // Tu entity
+import { ClassUser } from '../models/users.entity';  // Tu entity
 
-interface dataUser  {
+interface dataUser {
   id: number;
   username: string;
   person: {
@@ -20,12 +20,12 @@ interface dataUser  {
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(ClassUser )
-    private userRepository: Repository<ClassUser >,
+    @InjectRepository(ClassUser)
+    private userRepository: Repository<ClassUser>,
     private readonly jwtService: JwtService,  // ← Inyectado de authJWT
-  ) {}
+  ) { }
 
-  async generateToken(user: dataUser ) {
+  async generateToken(user: dataUser) {
     const payload = { username: user.username, id: user.id, type: user.userType.title };
 
     return {
@@ -35,7 +35,7 @@ export class AuthService {
     };
   }
 
-  async validateUser (username: string, password1: string): Promise<Omit<ClassUser , 'password' | 'active'> | null> {
+  async validateUser(username: string, password1: string): Promise<Omit<ClassUser, 'password' | 'active'> | null> {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.person', 'person')
@@ -74,7 +74,7 @@ export class AuthService {
     return result;
   }
 
-  async authUser (username: string, id: number): Promise<ClassUser > {  // ← AJUSTADO: id: number
+  async authUser(username: string, id: number): Promise<ClassUser> {
     const user = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.person', 'person')
@@ -104,4 +104,5 @@ export class AuthService {
 
     return user;  // Retorna con joins
   }
+
 }

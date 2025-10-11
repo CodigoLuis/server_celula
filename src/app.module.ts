@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';  // ← NUEVO: Para cargar .env globalmente
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities (mantengo tu lista completa)
-import { ClassPerson } from './models/persons.entity';
+import { ClassPerson } from './models/persons/persons.entity';
 import { ClassTerritory } from './models/territories.entity';
 import { ClassUserType } from './models/user_types.entity';
 import { ClassCell } from './models/cells.entity';
@@ -19,19 +19,20 @@ import { ClassMeetingDetail } from './models/meeting_details.entity';
 import { ClassEducation } from './models/education.entity';
 // Modules y Controllers
 import { AuthModule } from './auth/auth.module';
-import { PersonModule } from './registerPersons/person.module';
+import { PersonModule } from './persons/person.module';
+import { OptionsModule } from './options/options.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),  // ← NUEVO: Carga .env (para JWT_SECRET y DB vars)
+    ConfigModule.forRoot({ isGlobal: true }),  // Carga .env (para JWT_SECRET y DB vars)
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',  // ← AJUSTADO: Usa .env con fallback
-      port: parseInt(process.env.DB_PORT || '5432'),  // ← AJUSTADO: parseInt para port
-      username: process.env.DB_USERNAME || 'postgres',  // ← AJUSTADO: Usa .env
-      password: process.env.DB_PASSWORD || '123456789',  // ← AJUSTADO: Usa .env (¡cámbialo en prod!)
-      database: process.env.DB_DATABASE || 'reuniones',  // ← AJUSTADO: Usa .env
+      host: process.env.DB_HOST || 'localhost',  
+      port: parseInt(process.env.DB_PORT || '5432'),  
+      username: process.env.DB_USERNAME || 'postgres',        
+      password: process.env.DB_PASSWORD || '123456789',  
+      database: process.env.DB_DATABASE || 'reuniones',  
       entities: [
         ClassPerson, ClassEducation, ClassTerritory, ClassUserType,
         ClassCell, ClassCellsPersons, ClassTitle,
@@ -43,8 +44,9 @@ import { PersonModule } from './registerPersons/person.module';
       // autoLoadEntities: true,  // Opcional: Si quieres auto-cargar más entities sin listar
     }),
 
-    AuthModule,  // ← MANTENIDO: Incluye authJWT (JwtService global, strategy, guard)
-    PersonModule,  // ← MANTENIDO: Tu módulo de personas
+    AuthModule,  
+    PersonModule, 
+    OptionsModule,
   ],
   controllers: [],  
   providers: [],

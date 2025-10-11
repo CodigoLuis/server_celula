@@ -30,7 +30,7 @@ export class AuthController {
   }
 
   @Get('authentication')
-  @UseGuards(AuthJwtGuard)  // ← NUEVO: Protege con JWT de authJWT
+  @UseGuards(AuthJwtGuard)  // Protege con JWT de authJWT
   async authenticate(@Req() req): Promise<dataAuthToken> {
     // req.user viene de JwtStrategy (ClassUser  con person y userType)
     const user: ClassUser  = req.user;

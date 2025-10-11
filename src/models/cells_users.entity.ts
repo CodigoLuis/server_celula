@@ -1,6 +1,6 @@
 import { ClassMemberType } from './member_types.entity';
 import { ClassCell } from './cells.entity';
-import { ClassPerson } from './persons.entity';
+import { ClassPerson } from './persons/persons.entity';
 
 import {
   Entity,

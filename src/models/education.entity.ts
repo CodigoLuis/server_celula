@@ -1,4 +1,4 @@
-import { ClassPerson } from './persons.entity';
+import { ClassPerson } from './persons/persons.entity';
 
 import {
   Entity,

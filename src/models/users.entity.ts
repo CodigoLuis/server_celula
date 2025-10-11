@@ -1,4 +1,4 @@
-import { ClassPerson } from './persons.entity';
+import { ClassPerson } from './persons/persons.entity';
 import { ClassTerritory } from './territories.entity';
 import { ClassUserType } from './user_types.entity';
 import { ClassCell } from './cells.entity';

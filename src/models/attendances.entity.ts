@@ -1,6 +1,6 @@
 import { ClassMeeting } from './meetings.entity';
 import { ClassAttendanceType } from './attendance_types.entity';
-import { ClassPerson } from './persons.entity';
+import { ClassPerson } from './persons/persons.entity';
 
 import {
   Entity,

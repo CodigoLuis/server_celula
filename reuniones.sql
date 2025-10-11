@@ -8,12 +8,12 @@ CREATE TABLE "persons" (
   "last_name" varchar(40) NOT NULL,
   "gender" varchar(10) NOT NULL,
   "marital_status" varchar(12),
-  "id_number" varchar(12),
+  "id_number" varchar(12) NOT NULL UNIQUE, 
   "education_level" varchar(50),
   "phone" varchar(15),
   "address" varchar(150),
   "birth_date" date,
-  "created_at" timestamp NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp
 );
 
@@ -46,7 +46,7 @@ CREATE TABLE "users" (
   "password" varchar(65) NOT NULL,
   "email" varchar(100),
   "active" boolean NOT NULL,
-  "created_at" timestamp NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
   "leader_id" int,
   "person_id" int NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE "cell_types" (
 CREATE TABLE "cells" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "active" boolean NOT NULL,
-  "created_at" timestamp NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
   "cell_type_id" varchar(2) NOT NULL, 
   "territory_id" varchar(2) NOT NULL, 
@@ -88,7 +88,7 @@ CREATE TABLE "member_types" (
 CREATE TABLE "cells_persons" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "active" boolean NOT NULL,
-  "created_at" timestamp NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
   "member_type_id" varchar(2) NOT NULL,
   "cell_id" int NOT NULL,
@@ -104,7 +104,7 @@ CREATE TABLE "titles" (
   "id" varchar(2) UNIQUE PRIMARY KEY NOT NULL,
   "title" varchar(30) NOT NULL,
   "description" varchar(150) NOT NULL,
-  "created_at" timestamp NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
   "user_id" int NOT NULL,
   FOREIGN KEY ("user_id") REFERENCES "users" ("id")
@@ -114,7 +114,7 @@ CREATE TABLE "meeting_places" (
   "id" varchar(40) UNIQUE PRIMARY KEY NOT NULL,
   "location" varchar(100),
   "details" varchar(150) NOT NULL,
-  "created_at" timestamp NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
   "user_id" int NOT NULL,
   FOREIGN KEY ("user_id") REFERENCES "users" ("id")
@@ -128,7 +128,7 @@ CREATE TABLE "meetings" (
   "start_time" time NOT NULL,
   "end_time" time,
   "completed" boolean,
-  "created_at" timestamp NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
   "cell_id" int NOT NULL,
   "user_id" int NOT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE "attendance_types" (
   "id" varchar(2) UNIQUE PRIMARY KEY NOT NULL,
   "title" varchar(20) NOT NULL,
   "description" varchar(100) NOT NULL,
-  "created_at" timestamp NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp
 );
 
@@ -174,23 +174,38 @@ CREATE TABLE "attendances" (
 ------------------------------------------------------------------------------------------------------
 -------------------------------INSERT EXAMPLE-----------------------------------------------------
 --------------------------------------------------------------------------------------------------
-
+-- Azul rey, Rosado, Celeste, Blanco, Verde manzana, Negro
+-- Vinotinto, Lila, Amarillo, Naranja, Rojo, Verde oliva,
 INSERT INTO territories (id, name, male) VALUES
-('RD', 'Red', true),
-('RF', 'Red', false),
-('BL', 'Blue', true),
-('BF', 'Blue', false),
-('GR', 'Green', true),
-('GF', 'Green', false),
-('YL', 'Yellow', true),
-('YF', 'Yellow', false);
+('Z1', 'Azul rey', true),
+('Z2', 'Azul rey', false),
+('R1', 'Rosado', true),
+('R2', 'Rosado', false),
+('C1', 'Celeste', true),
+('C2', 'Celeste', false),
+('B1', 'Blanco', true),
+('B2', 'Blanco', false),
+('M1', 'Verde manzana', true),
+('M2', 'Verde manzana', false),
+('V1', 'Vinotinto', true),
+('V2', 'Vinotinto', false),
+('L1', 'Lila', true),
+('L2', 'Lila', false),
+('A1', 'Amarillo', true),
+('A2', 'Amarillo', false),
+('N1', 'Naranja', true),
+('N2', 'Naranja', false),
+('J1', 'Rojo', true),
+('J2', 'Rojo', false),
+('O1', 'Verde oliva', true),
+('O2', 'Verde oliva', false);
 
 
 INSERT INTO user_types (id, title, description) VALUES
-('PA', 'Pastor', 'Church pastor responsible for spiritual guidance'),
-('L1', 'Leader of 12', 'Leader responsible for a group of 12 members'),
-('LI', 'Leader', 'General group leader'),
-('DI', 'Disciple', 'Member who follows teachings and participates actively');
+('PA', 'Pastor', 'Pastor de la iglesia responsable de la guía espiritual'),
+('L1', 'Líder de 12', 'Líder responsable de un territorio de la iglesia'),
+('LI', 'Líder', 'Líder de un grupo ( celúla )'),
+('DI', 'Discípulo', 'Miembro que sigue las enseñanzas y participa activamente');
 
 
 INSERT INTO persons (photo, first_name, last_name, gender, marital_status, id_number, education_level, phone, address, birth_date, created_at, updated_at) VALUES
@@ -202,17 +217,17 @@ INSERT INTO persons (photo, first_name, last_name, gender, marital_status, id_nu
 
 -- Insert Pastor (top of hierarchy, no leader_id)
 INSERT INTO users (username, password, email, active, created_at, updated_at, leader_id, person_id, user_type_id, territory_id) VALUES
-('johnpastor', 'pass123', 'john.pastor@example.com', true, NOW(), NULL, NULL, 1, 'PA', 'RD');  -- Male Pastor in Red Male territory
+('johnpastor', 'pass123', 'john.pastor@example.com', true, NOW(), NULL, NULL, 1, 'PA', 'Z1');  
 
 -- Insert Leader of 12 (leader_id = Pastor)
 INSERT INTO users (username, password, email, active, created_at, updated_at, leader_id, person_id, user_type_id, territory_id) VALUES
-('maryleader12', 'pass234', 'mary.leader12@example.com', true, NOW(), NULL, 1, 2, 'L1', 'RF');  -- Female Leader of 12 in Red Female territory, leader is John Pastor (id=1)
+('maryleader12', 'pass234', 'mary.leader12@example.com', true, NOW(), NULL, 1, 2, 'L1', 'A2');  
 
 -- Insert Leader (leader_id = Leader of 12)
 INSERT INTO users (username, password, email, active, created_at, updated_at, leader_id, person_id, user_type_id, territory_id) VALUES
-('paulleader', 'pass345', 'paul.leader@example.com', true, NOW(), NULL, 2, 3, 'LI', 'BL');  -- Male Leader in Blue Male territory, leader is Mary Leader12 (id=2)
+('paulleader', 'pass345', 'paul.leader@example.com', true, NOW(), NULL, 2, 3, 'LI', 'V1');  
 
 -- Insert Disciple (leader_id = Leader)
 INSERT INTO users (username, password, email, active, created_at, updated_at, leader_id, person_id, user_type_id, territory_id) VALUES
-('lisadisciple', 'pass456', 'lisa.disciple@example.com', true, NOW(), NULL, 3, 4, 'DI', 'BF');  -- Female Disciple in Blue Female territory, leader is Paul Leader (id=3)
+('lisadisciple', 'pass456', 'lisa.disciple@example.com', true, NOW(), NULL, 3, 4, 'DI', 'O2');  
 
