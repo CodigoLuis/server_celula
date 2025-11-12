@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';  // Tu service
-import { ClassUser  } from '../models/users.entity';  // Tu entity
+import { ClassUser  } from '../models/users/users.entity';  // Tu entity
 
 @Injectable()
 export class JwtService {  // Custom: Validaciones extras JWT

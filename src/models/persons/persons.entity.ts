@@ -1,5 +1,5 @@
 import { ClassEducation } from '../education.entity';
-import { ClassUser } from '../users.entity';
+import { ClassUser } from '../users/users.entity';
 import { ClassAttendance } from '../attendances.entity';
 import { ClassCellsPersons } from '../cells_users.entity';
 

@@ -1,5 +1,5 @@
 import { ClassCellType } from './cell_types.entity';
-import { ClassUser  } from './users.entity';
+import { ClassUser  } from './users/users.entity';
 import { ClassCellsPersons } from './cells_users.entity';
 import { ClassMeeting } from './meetings.entity';
 import { ClassTerritory } from './territories.entity';

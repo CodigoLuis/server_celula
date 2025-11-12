@@ -2,8 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 // import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';  // ← De authJWT (global)
-import { ClassUser } from '../models/users.entity';  // Tu entity
+import { JwtService } from '@nestjs/jwt';  
+import { ClassUser } from '../models/users/users.entity';  
 
 interface dataUser {
   id: number;
@@ -11,6 +11,7 @@ interface dataUser {
   person: {
     firstName: string;
     lastName: string;
+    gender: string;
   };
   userType: {
     title: string;
@@ -46,7 +47,7 @@ export class AuthService {
         'user.password',
         'userType.title',
         'person.firstName',
-        'person.lastName',
+        'person.lastName', 
       ])
       .where('user.username = :username', { username })
       .getOne();
@@ -79,12 +80,17 @@ export class AuthService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.person', 'person')
       .leftJoinAndSelect('user.userType', 'userType')
+      .leftJoinAndSelect('user.territory', 'territory')
       .select([
         'user.id',
-        'user.username',  // ← AGREGADO: Para chequeo
+        'user.username',  
+        'territory.id',  
+        'territory.name',  
+        'territory.male',  
         'userType.title',
         'person.firstName',
         'person.lastName',
+        'person.gender',
       ])
       .where('user.id = :id', { id })  // ← id: number
       .getOne();

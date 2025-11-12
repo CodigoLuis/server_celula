@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClassUser  } from '../models/users.entity';  // Tu entity
+import { ClassUser  } from '../models/users/users.entity';  // Tu entity
 import { AuthService } from '../auth/auth.service';  // Tu service para authUser 
 
 import { JwtService } from './jwt.service';  // Custom para validaciones
 import { JwtStrategy } from './jwt.strategy';
-import { AuthJwtGuard } from './auth-jwt.guard';
+import { AuthJwtGuard } from './auth_jwt.guard';
 
 @Module({
   imports: [

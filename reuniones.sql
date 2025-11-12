@@ -43,7 +43,7 @@ CREATE TABLE "user_types" (
 CREATE TABLE "users" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "username" varchar(25) NOT NULL,
-  "password" varchar(65) NOT NULL,
+  "password" varchar(25) NOT NULL,
   "email" varchar(100),
   "active" boolean NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -197,6 +197,8 @@ INSERT INTO territories (id, name, male) VALUES
 ('N2', 'Naranja', false),
 ('J1', 'Rojo', true),
 ('J2', 'Rojo', false),
+('G1', 'Negro', true),
+('G2', 'Negro', false),
 ('O1', 'Verde oliva', true),
 ('O2', 'Verde oliva', false);
 
@@ -209,10 +211,10 @@ INSERT INTO user_types (id, title, description) VALUES
 
 
 INSERT INTO persons (photo, first_name, last_name, gender, marital_status, id_number, education_level, phone, address, birth_date, created_at, updated_at) VALUES
-('photos/john_pastor.jpg', 'John', 'Pastor', 'Male', 'Married', '1000000001', 'Master', '555-0001', '1 Church St', '1970-01-01', NOW(), NULL),
-('photos/mary_leader12.jpg', 'Mary', 'Leader12', 'Female', 'Married', '1000000002', 'Bachelor', '555-0002', '2 Church St', '1980-02-02', NOW(), NULL),
-('photos/paul_leader.jpg', 'Paul', 'Leader', 'Male', 'Single', '1000000003', 'Bachelor', '555-0003', '3 Church St', '1990-03-03', NOW(), NULL),
-('photos/lisa_disciple.jpg', 'Lisa', 'Disciple', 'Female', 'Single', '1000000004', 'High School', '555-0004', '4 Church St', '2000-04-04', NOW(), NULL);
+('photos/john_pastor.jpg', 'John', 'Pastor', 'Male', 'Married', 'V-12.123.123', 'Master', '555-0001', '1 Church St', '1970-01-01', NOW(), NULL),
+('photos/mary_leader12.jpg', 'Mary', 'Leader12', 'Female', 'Married', 'V-45.456.456', 'Bachelor', '555-0002', '2 Church St', '1980-02-02', NOW(), NULL),
+('photos/paul_leader.jpg', 'Paul', 'Leader', 'Male', 'Single', 'V-78.789.789', 'Bachelor', '555-0003', '3 Church St', '1990-03-03', NOW(), NULL),
+('photos/lisa_disciple.jpg', 'Lisa', 'Disciple', 'Female', 'Single', 'V-14.147.147', 'High School', '555-0004', '4 Church St', '2000-04-04', NOW(), NULL);
 
 
 -- Insert Pastor (top of hierarchy, no leader_id)

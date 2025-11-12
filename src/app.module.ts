@@ -13,7 +13,7 @@ import { ClassMeeting } from './models/meetings.entity';
 import { ClassAttendanceType } from './models/attendance_types.entity';
 import { ClassAttendance } from './models/attendances.entity';
 import { ClassCellType } from './models/cell_types.entity';
-import { ClassUser } from './models/users.entity';  // Tu entity principal
+import { ClassUser } from './models/users/users.entity';  // Tu entity principal
 import { ClassMemberType } from './models/member_types.entity';
 import { ClassMeetingDetail } from './models/meeting_details.entity';
 import { ClassEducation } from './models/education.entity';
@@ -21,6 +21,7 @@ import { ClassEducation } from './models/education.entity';
 import { AuthModule } from './auth/auth.module';
 import { PersonModule } from './persons/person.module';
 import { OptionsModule } from './options/options.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { OptionsModule } from './options/options.module';
     AuthModule,  
     PersonModule, 
     OptionsModule,
+    UserModule,
   ],
   controllers: [],  
   providers: [],

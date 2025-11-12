@@ -1,10 +1,10 @@
-import { ClassPerson } from './persons/persons.entity';
-import { ClassTerritory } from './territories.entity';
-import { ClassUserType } from './user_types.entity';
-import { ClassCell } from './cells.entity';
-import { ClassTitle } from './titles.entity';
-import { ClassMeetingPlace } from './meeting_places.entity';
-import { ClassMeeting } from './meetings.entity';
+import { ClassPerson } from '../persons/persons.entity';
+import { ClassTerritory } from '../territories.entity';
+import { ClassUserType } from '../user_types.entity';
+import { ClassCell } from '../cells.entity';
+import { ClassTitle } from '../titles.entity';
+import { ClassMeetingPlace } from '../meeting_places.entity';
+import { ClassMeeting } from '../meetings.entity';
 
 import { 
   Entity,

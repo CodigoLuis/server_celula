@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthJwtGuard } from '../authJWT/auth-jwt.guard';  // ← NUEVO: Importa de authJWT
-import { ClassUser  } from '../models/users.entity';  // Para tipos
+import { AuthJwtGuard } from '../authJWT/auth_jwt.guard';  // ← NUEVO: Importa de authJWT
+import { ClassUser  } from '../models/users/users.entity';  // Para tipos
 
 interface dataAuthToken {
   firstName: string;
@@ -33,7 +33,7 @@ export class AuthController {
   @UseGuards(AuthJwtGuard)  // Protege con JWT de authJWT
   async authenticate(@Req() req): Promise<dataAuthToken> {
     // req.user viene de JwtStrategy (ClassUser  con person y userType)
-    const user: ClassUser  = req.user;
+    const user: ClassUser = req.user;
     return {
       firstName: user.person.firstName,
       lastName: user.person.lastName,

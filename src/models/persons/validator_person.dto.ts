@@ -23,7 +23,7 @@ export class ValidatorPersonDto {
   @IsString()
   @IsNotEmpty()
   @Length(1, 10)
-  gender: string;  // Ej: 'M', 'F', 'O'
+  gender: string;  // Ej: 'M', 'F'
 
 
   // Campos opcionales

@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { OptionsService } from './options.service';
-import { AuthJwtGuard } from '../authJWT/auth-jwt.guard';
+import { AuthJwtGuard } from '../authJWT/auth_jwt.guard';
 
 @Controller('options')
 export class OptionsController {

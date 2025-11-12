@@ -1,7 +1,8 @@
-import { Controller, Post, Body, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Req, ValidationPipe, UseGuards } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { ValidatorPersonDto } from '../models/persons/validator_person.dto';
-import { AuthJwtGuard } from '../authJWT/auth-jwt.guard';
+import { AuthJwtGuard } from '../authJWT/auth_jwt.guard';
+import { ClassUser } from 'src/models/users/users.entity';
 
 interface RegisterUserDto {
   username: string;
@@ -33,11 +34,19 @@ export class PersonController {
     return this.personService.registerPerson(validatorPersonDto);
   }
 
+  @Post('get-list')
+  @UseGuards(AuthJwtGuard)
+  async getList(@Req() req) {
+    const user: ClassUser = req.user;
 
-  @Post('registerUserWithPerson')
-  async registerUser(@Body() registerUserDto: RegisterUserDto): Promise<any> {
-    const { person, ...userData } = registerUserDto;
-    return this.personService.registerUserWithPerson(userData, person);
+    return this.personService.getListOfPeople(user);
   }
+
+
+  // @Post('registerUserWithPerson')
+  // async registerUser(@Body() registerUserDto: RegisterUserDto): Promise<any> {
+  //   const { person, ...userData } = registerUserDto;
+  //   return this.personService.registerUserWithPerson(userData, person);
+  // }
 
 }

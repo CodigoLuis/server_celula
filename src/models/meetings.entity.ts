@@ -1,4 +1,4 @@
-import { ClassUser  } from './users.entity';
+import { ClassUser  } from './users/users.entity';
 import { ClassCell } from './cells.entity';
 import { ClassTitle } from './titles.entity';
 import { ClassMeetingPlace } from './meeting_places.entity';

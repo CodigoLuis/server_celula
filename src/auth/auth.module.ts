@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
-import { ClassUser  } from '../models/users.entity';  // Tu entity
-import { AuthJwtModule } from '../authJWT/auth-jwt.module';  // ← NUEVO: Importa JWT module
+import { ClassUser  } from '../models/users/users.entity';  // Tu entity
+import { AuthJwtModule } from '../authJWT/auth_jwt.module';  // ← NUEVO: Importa JWT module
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
