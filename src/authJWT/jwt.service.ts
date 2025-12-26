@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from '../auth/auth.service';  // Tu service
+import { AuthService } from '../auths/auth.service';  // Tu service
 import { ClassUser  } from '../models/users/users.entity';  // Tu entity
 
 @Injectable()

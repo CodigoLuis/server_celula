@@ -1,16 +1,17 @@
-import { ClassCell } from './cells.entity';
+import { ClassCell } from '../cells/cells.entity';
 
 import {
   Entity,
   PrimaryColumn,
   Column,
   OneToMany,
+  PrimaryGeneratedColumn, // Necesario para el 'id' serial
 } from 'typeorm';
 
 @Entity('cell_types')
 export class ClassCellType {
-  @PrimaryColumn({ length: 2 })
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ length: 20 })
   title: string;

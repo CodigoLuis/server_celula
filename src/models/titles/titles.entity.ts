@@ -1,5 +1,5 @@
-import { ClassUser  } from './users/users.entity';
-import { ClassMeeting } from './meetings.entity';
+import { ClassUser } from '../users/users.entity';
+import { ClassMeeting } from '../meetings/meetings.entity';
 
 import {
   Entity,
@@ -10,12 +10,13 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn, // Necesario para el 'id' serial
 } from 'typeorm';
 
 @Entity('titles')
 export class ClassTitle {
-  @PrimaryColumn({ length: 2 })
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ length: 30 })
   title: string;
@@ -29,9 +30,9 @@ export class ClassTitle {
   @UpdateDateColumn({ name: 'updated_at', nullable: true })
   updatedAt?: Date;
 
-  @ManyToOne(() => ClassUser , (user) => user.titles, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => ClassUser, (user) => user.titles, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'user_id' })
-  user: ClassUser ;
+  user: ClassUser;
 
   @OneToMany(() => ClassMeeting, (meeting) => meeting.title)
   meetings?: ClassMeeting[];

@@ -16,8 +16,8 @@ CREATE TABLE "persons" (
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp
 );
-
-CREATE TABLE "education" (
+ 
+CREATE TABLE "educations" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "consolidation_level" varchar(2),
   "leader_school" boolean,
@@ -29,13 +29,14 @@ CREATE TABLE "education" (
 ----------------------------------------------------------------------------------
 
 CREATE TABLE "territories" (
-  "id" varchar(2) UNIQUE PRIMARY KEY NOT NULL,
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "name" varchar(17) NOT NULL,
-  "male" boolean NOT NULL
+  "male" boolean NOT NULL,
+  "color" varchar(7)
 );
 
 CREATE TABLE "user_types" (
-  "id" varchar(2) UNIQUE PRIMARY KEY NOT NULL,
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "title" varchar(20) NOT NULL,
   "description" varchar(150) NOT NULL
 );
@@ -43,15 +44,15 @@ CREATE TABLE "user_types" (
 CREATE TABLE "users" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "username" varchar(25) NOT NULL,
-  "password" varchar(25) NOT NULL,
+  "password" varchar(255) NOT NULL,
   "email" varchar(100),
   "active" boolean NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
   "leader_id" int,
   "person_id" int NOT NULL,
-  "user_type_id" varchar(2) NOT NULL,
-  "territory_id" varchar(2) NOT NULL,
+  "user_type_id" int NOT NULL,
+  "territory_id" int NOT NULL,
   FOREIGN KEY ("leader_id") REFERENCES "users" ("id"),
   FOREIGN KEY ("person_id") REFERENCES "persons" ("id"),
   FOREIGN KEY ("user_type_id") REFERENCES "user_types" ("id"),
@@ -61,26 +62,52 @@ CREATE TABLE "users" (
 -----------------------------------------------------------------------------------
 
 CREATE TABLE "cell_types" (
-  "id" varchar(2) UNIQUE PRIMARY KEY NOT NULL,
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "title" varchar(20) NOT NULL,
   "description" varchar(150) NOT NULL
 );
 
-CREATE TABLE "cells" (
+CREATE TABLE "meeting_places" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
-  "active" boolean NOT NULL,
+  "title" varchar(30) NOT NULL,
+  "details" varchar(150) NOT NULL,
+  "location" varchar(60),
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
-  "cell_type_id" varchar(2) NOT NULL, 
-  "territory_id" varchar(2) NOT NULL, 
   "user_id" int NOT NULL,
-  FOREIGN KEY ("cell_type_id") REFERENCES "cell_types" ("id"),
-  FOREIGN KEY ("territory_id") REFERENCES "territories" ("id"),
   FOREIGN KEY ("user_id") REFERENCES "users" ("id")
 );
 
-CREATE TABLE "member_types" (
-  "id" varchar(2) UNIQUE PRIMARY KEY NOT NULL,
+CREATE TABLE "cells" (
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
+  "title" varchar(20) NOT NULL,
+  "active" boolean NOT NULL,
+  "territory_id" int NOT NULL, 
+  "cell_type_id" int NOT NULL, 
+  "meeting_place_id" int NOT NULL,
+  "user_id" int NOT NULL,
+  "start_date" timestamp,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" timestamp,
+  FOREIGN KEY ("territory_id") REFERENCES "territories" ("id"),
+  FOREIGN KEY ("cell_type_id") REFERENCES "cell_types" ("id"),
+  FOREIGN KEY ("meeting_place_id") REFERENCES "meeting_places" ("id"),
+  FOREIGN KEY ("user_id") REFERENCES "users" ("id")
+);
+
+CREATE TABLE "predetermined_meeting_places" ( 
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
+  "active" boolean NOT NULL,
+  "cell_id" int NOT NULL,
+  "meeting_place_id" int NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" timestamp,
+  FOREIGN KEY ("cell_id") REFERENCES "cells" ("id"),
+  FOREIGN KEY ("meeting_place_id") REFERENCES "meeting_places" ("id")
+);
+
+CREATE TABLE "member_types" ( 
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "title" varchar(20) NOT NULL,
   "description" varchar(150) NOT NULL
 );
@@ -90,7 +117,7 @@ CREATE TABLE "cells_persons" (
   "active" boolean NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
-  "member_type_id" varchar(2) NOT NULL,
+  "member_type_id" int NOT NULL,
   "cell_id" int NOT NULL,
   "person_id" int NOT NULL,
   FOREIGN KEY ("member_type_id") REFERENCES "member_types" ("id"),
@@ -101,19 +128,9 @@ CREATE TABLE "cells_persons" (
 ------------------------------------------------------------------------------------------------
 
 CREATE TABLE "titles" (
-  "id" varchar(2) UNIQUE PRIMARY KEY NOT NULL,
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "title" varchar(30) NOT NULL,
   "description" varchar(150) NOT NULL,
-  "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "updated_at" timestamp,
-  "user_id" int NOT NULL,
-  FOREIGN KEY ("user_id") REFERENCES "users" ("id")
-);
-
-CREATE TABLE "meeting_places" (
-  "id" varchar(40) UNIQUE PRIMARY KEY NOT NULL,
-  "location" varchar(100),
-  "details" varchar(150) NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
   "user_id" int NOT NULL,
@@ -123,7 +140,7 @@ CREATE TABLE "meeting_places" (
 -----------------------------------------------------------------------------------------
 
 CREATE TABLE "meetings" (
-  "id" varchar(40) UNIQUE PRIMARY KEY NOT NULL,
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "date" date NOT NULL,
   "start_time" time NOT NULL,
   "end_time" time,
@@ -132,28 +149,36 @@ CREATE TABLE "meetings" (
   "updated_at" timestamp,
   "cell_id" int NOT NULL,
   "user_id" int NOT NULL,
-  "meeting_place_id" varchar(40) NOT NULL,
-  "title_id" varchar(2) NOT NULL,
+  "title_id" int NOT NULL,
   FOREIGN KEY ("cell_id") REFERENCES "cells" ("id"),
   FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
-  FOREIGN KEY ("meeting_place_id") REFERENCES "meeting_places" ("id"),
   FOREIGN KEY ("title_id") REFERENCES "titles" ("id")
 );
 
+
+CREATE TABLE "special_activities" (
+    "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
+    "meeting_id" int NOT NULL,
+    "meeting_place_id" int NOT NULL,
+    FOREIGN KEY ("meeting_id") REFERENCES "meetings" ("id"),
+    FOREIGN KEY ("meeting_place_id") REFERENCES "meeting_places" ("id")
+);
+
+
 CREATE TABLE "meeting_details" (
-  "id" varchar(40) UNIQUE PRIMARY KEY NOT NULL,
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "dynamic" boolean,
   "praise" boolean,
   "message" boolean,
   "offering" NUMERIC,
   "consolidation" boolean,
   "guests" varchar(3),
-  "meeting_id" varchar(40) NOT NULL,
+  "meeting_id" int NOT NULL,
   FOREIGN KEY ("meeting_id") REFERENCES "meetings" ("id")
 );
 
 CREATE TABLE "attendance_types" (
-  "id" varchar(2) UNIQUE PRIMARY KEY NOT NULL,
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "title" varchar(20) NOT NULL,
   "description" varchar(100) NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -161,9 +186,10 @@ CREATE TABLE "attendance_types" (
 );
 
 CREATE TABLE "attendances" (
+  "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "person_id" int NOT NULL,
-  "meeting_id" varchar(40) NOT NULL,
-  "attendance_type_id" varchar(2) NOT NULL,
+  "meeting_id" int NOT NULL,
+  "attendance_type_id" int NOT NULL,
   "attended" boolean,
   FOREIGN KEY ("person_id") REFERENCES "persons" ("id"),
   FOREIGN KEY ("meeting_id") REFERENCES "meetings" ("id"),
@@ -176,38 +202,38 @@ CREATE TABLE "attendances" (
 --------------------------------------------------------------------------------------------------
 -- Azul rey, Rosado, Celeste, Blanco, Verde manzana, Negro
 -- Vinotinto, Lila, Amarillo, Naranja, Rojo, Verde oliva,
-INSERT INTO territories (id, name, male) VALUES
-('Z1', 'Azul rey', true),
-('Z2', 'Azul rey', false),
-('R1', 'Rosado', true),
-('R2', 'Rosado', false),
-('C1', 'Celeste', true),
-('C2', 'Celeste', false),
-('B1', 'Blanco', true),
-('B2', 'Blanco', false),
-('M1', 'Verde manzana', true),
-('M2', 'Verde manzana', false),
-('V1', 'Vinotinto', true),
-('V2', 'Vinotinto', false),
-('L1', 'Lila', true),
-('L2', 'Lila', false),
-('A1', 'Amarillo', true),
-('A2', 'Amarillo', false),
-('N1', 'Naranja', true),
-('N2', 'Naranja', false),
-('J1', 'Rojo', true),
-('J2', 'Rojo', false),
-('G1', 'Negro', true),
-('G2', 'Negro', false),
-('O1', 'Verde oliva', true),
-('O2', 'Verde oliva', false);
+INSERT INTO territories (id, name, male, color) VALUES
+(1, 'Azul rey', true, '#00008B'),
+(2, 'Azul rey', false, '#00008B'),
+(3, 'Rosado', true, '#FFC0CB'),
+(4, 'Rosado', false, '#FFC0CB'),
+(5, 'Celeste', true, '#00BFFF'),
+(6, 'Celeste', false, '#00BFFF'),
+(7, 'Blanco', true, '#FFFFFF'),
+(8, 'Blanco', false, '#FFFFFF'),
+(9, 'Verde manzana', true, '#8CC63E'),
+(10, 'Verde manzana', false, '#8CC63E'),
+(11, 'Vinotinto', true, '#800000'),
+(12, 'Vinotinto', false, '#800000'),
+(13, 'Lila', true, '#C8A2C8'),
+(14, 'Lila', false, '#C8A2C8'),
+(15, 'Amarillo', true, '#FFFF00'),
+(16, 'Amarillo', false, '#FFFF00'),
+(17, 'Naranja', true, '#FFA500'),
+(18, 'Naranja', false, '#FFA500'),
+(19, 'Rojo', true, '#FF0000'),
+(20, 'Rojo', false, '#FF0000'),
+(21, 'Negro', true, '#000000'),
+(22, 'Negro', false, '#000000'),
+(23, 'Verde oliva', true, '#6B8E23'),
+(24, 'Verde oliva', false, '#6B8E23');
 
 
 INSERT INTO user_types (id, title, description) VALUES
-('PA', 'Pastor', 'Pastor de la iglesia responsable de la guía espiritual'),
-('L1', 'Líder de 12', 'Líder responsable de un territorio de la iglesia'),
-('LI', 'Líder', 'Líder de un grupo ( celúla )'),
-('DI', 'Discípulo', 'Miembro que sigue las enseñanzas y participa activamente');
+(1, 'Pastor', 'Pastor de la iglesia responsable de la guía espiritual'),
+(2, 'Líder de 12', 'Líder responsable de un territorio de la iglesia'),
+(3, 'Líder', 'Líder de un grupo ( celúla )'),
+(4, 'Discípulo', 'Miembro que sigue las enseñanzas y participa activamente');
 
 
 INSERT INTO persons (photo, first_name, last_name, gender, marital_status, id_number, education_level, phone, address, birth_date, created_at, updated_at) VALUES
@@ -219,17 +245,17 @@ INSERT INTO persons (photo, first_name, last_name, gender, marital_status, id_nu
 
 -- Insert Pastor (top of hierarchy, no leader_id)
 INSERT INTO users (username, password, email, active, created_at, updated_at, leader_id, person_id, user_type_id, territory_id) VALUES
-('johnpastor', 'pass123', 'john.pastor@example.com', true, NOW(), NULL, NULL, 1, 'PA', 'Z1');  
+('johnpastor', 'pass123', 'john.pastor@example.com', true, NOW(), NULL, NULL, 1, 1, 1);  
 
 -- Insert Leader of 12 (leader_id = Pastor)
 INSERT INTO users (username, password, email, active, created_at, updated_at, leader_id, person_id, user_type_id, territory_id) VALUES
-('maryleader12', 'pass234', 'mary.leader12@example.com', true, NOW(), NULL, 1, 2, 'L1', 'A2');  
+('maryleader12', 'pass234', 'mary.leader12@example.com', true, NOW(), NULL, 1, 2, 2, 16);  
 
 -- Insert Leader (leader_id = Leader of 12)
 INSERT INTO users (username, password, email, active, created_at, updated_at, leader_id, person_id, user_type_id, territory_id) VALUES
-('paulleader', 'pass345', 'paul.leader@example.com', true, NOW(), NULL, 2, 3, 'LI', 'V1');  
+('paulleader', 'pass345', 'paul.leader@example.com', true, NOW(), NULL, 2, 3, 3, 11);  
 
 -- Insert Disciple (leader_id = Leader)
 INSERT INTO users (username, password, email, active, created_at, updated_at, leader_id, person_id, user_type_id, territory_id) VALUES
-('lisadisciple', 'pass456', 'lisa.disciple@example.com', true, NOW(), NULL, 3, 4, 'DI', 'O2');  
+('lisadisciple', 'pass456', 'lisa.disciple@example.com', true, NOW(), NULL, 3, 4, 4, 24);  
 

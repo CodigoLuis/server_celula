@@ -3,25 +3,27 @@ import { ConfigModule } from '@nestjs/config';  // ← NUEVO: Para cargar .env g
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Entities (mantengo tu lista completa)
 import { ClassPerson } from './models/persons/persons.entity';
-import { ClassTerritory } from './models/territories.entity';
-import { ClassUserType } from './models/user_types.entity';
-import { ClassCell } from './models/cells.entity';
-import { ClassCellsPersons } from './models/cells_users.entity';
-import { ClassTitle } from './models/titles.entity';
-import { ClassMeetingPlace } from './models/meeting_places.entity';
-import { ClassMeeting } from './models/meetings.entity';
-import { ClassAttendanceType } from './models/attendance_types.entity';
-import { ClassAttendance } from './models/attendances.entity';
-import { ClassCellType } from './models/cell_types.entity';
-import { ClassUser } from './models/users/users.entity';  // Tu entity principal
-import { ClassMemberType } from './models/member_types.entity';
-import { ClassMeetingDetail } from './models/meeting_details.entity';
-import { ClassEducation } from './models/education.entity';
+import { ClassUser } from './models/users/users.entity';
+import { ClassTerritory } from './models/territories/territories.entity';
+import { ClassUserType } from './models/user_types/user_types.entity';
+import { ClassCell } from './models/cells/cells.entity';
+import { ClassCellsPersons } from './models/cells_persons/cells_persons.entity';
+import { ClassTitle } from './models/titles/titles.entity';
+import { ClassMeetingPlace } from './models/meeting_places/meeting_places.entity';
+import { ClassMeeting } from './models/meetings/meetings.entity';
+import { ClassAttendanceType } from './models/attendance_types/attendance_types.entity';
+import { ClassAttendance } from './models/attendances/attendances.entity';
+import { ClassCellType } from './models/cell_types/cell_types.entity';
+import { ClassMemberType } from './models/member_types/member_types.entity';
+import { ClassMeetingDetail } from './models/meeting_details/meeting_details.entity';
+import { ClassEducation } from './models/educations/educations.entity';
+import { ClassPredeterminedMeetingPlace } from './models/predetermined_meeting_places/predetermined_meeting_places.entity';
+import { ClassSpecialActivity } from './models/special_activities/special_activities.entity';
 // Modules y Controllers
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auths/auth.module';
 import { PersonModule } from './persons/person.module';
 import { OptionsModule } from './options/options.module';
-import { UserModule } from './user/user.module';
+import { UserModule } from './users/user.module';
 
 @Module({
   imports: [
@@ -38,8 +40,8 @@ import { UserModule } from './user/user.module';
         ClassPerson, ClassEducation, ClassTerritory, ClassUserType,
         ClassCell, ClassCellsPersons, ClassTitle,
         ClassMeetingPlace, ClassMeeting, ClassAttendanceType,
-        ClassAttendance, ClassCellType,
-        ClassUser, ClassMemberType, ClassMeetingDetail  // ← Incluye ClassUser  y todas
+        ClassAttendance, ClassCellType, ClassUser, ClassMemberType, 
+        ClassMeetingDetail, ClassPredeterminedMeetingPlace, ClassSpecialActivity
       ],
       synchronize: false,  // ← MANTENIDO: Bueno para prod; pon true solo en dev
       // autoLoadEntities: true,  // Opcional: Si quieres auto-cargar más entities sin listar

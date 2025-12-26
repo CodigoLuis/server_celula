@@ -1,7 +1,7 @@
-import { ClassEducation } from '../education.entity';
+import { ClassEducation } from '../educations/educations.entity';
 import { ClassUser } from '../users/users.entity';
-import { ClassAttendance } from '../attendances.entity';
-import { ClassCellsPersons } from '../cells_users.entity';
+import { ClassAttendance } from '../attendances/attendances.entity';
+import { ClassCellsPersons } from '../cells_persons/cells_persons.entity'; // Asegúrate que el nombre del archivo sea cells_persons.entity.ts
 
 import {
   Column,
@@ -12,12 +12,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
+ 
 @Entity('persons')
 export class ClassPerson {
   @PrimaryGeneratedColumn()
   id: number;
- 
+
   @Column({ length: 150, nullable: true })
   photo?: string;
 
@@ -33,8 +33,8 @@ export class ClassPerson {
   @Column({ length: 12, nullable: true, name: 'marital_status' })
   maritalStatus?: string;
 
-  @Column({ length: 12, name: 'id_number' })
-  idNumber?: string;
+  @Column({ length: 12, unique: true, name: 'id_number' })
+  idNumber: string;
 
   @Column({ length: 50, nullable: true, name: 'education_level' })
   educationLevel?: string;
@@ -46,7 +46,7 @@ export class ClassPerson {
   address?: string;
 
   @Column({ type: 'date', nullable: true, name: 'birth_date' })
-  birthDate: string;
+  birthDate?: string; // Es nullable en SQL
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -63,7 +63,6 @@ export class ClassPerson {
   @OneToMany(() => ClassAttendance, (attendance) => attendance.person)
   attendances?: ClassAttendance[];
 
-  @OneToMany(() => ClassCellsPersons, (cu) => cu.persons)
+  @OneToMany(() => ClassCellsPersons, (cu) => cu.person)
   cellsPersons?: ClassCellsPersons[];
-
 }

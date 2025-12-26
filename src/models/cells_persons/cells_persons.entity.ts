@@ -1,6 +1,6 @@
-import { ClassMemberType } from './member_types.entity';
-import { ClassCell } from './cells.entity';
-import { ClassPerson } from './persons/persons.entity';
+import { ClassMemberType } from '../member_types/member_types.entity';
+import { ClassCell } from '../cells/cells.entity';
+import { ClassPerson } from '../persons/persons.entity';
 
 import {
   Entity,
@@ -36,6 +36,5 @@ export class ClassCellsPersons {
 
   @ManyToOne(() => ClassPerson , (person) => person.cellsPersons, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'person_id' })
-  persons: ClassPerson ;
-
+  person: ClassPerson ;
 }

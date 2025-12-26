@@ -23,16 +23,28 @@ export class PersonController {
   @Post('existing')
   @UseGuards(AuthJwtGuard)
   async existing(@Body() data: { idNumber: string }) {
-    const result = await this.personService.existingPerson(data.idNumber);
+    const result = await this.personService.queryDataByIdNumberPerson(data.idNumber);
     return { data: result, existing: result ? true : false }
   }
 
+  @Post('selectDataById')
+  @UseGuards(AuthJwtGuard)
+  async selectDataById(@Body() data: { idNumber: number }) {
+    const result = await this.personService.queryDataById(data.idNumber);
+    return { data: result, existing: result ? true : false }
+  }
 
   @Post('register')
   @UseGuards(AuthJwtGuard)
   async register(@Body(ValidationPipe) validatorPersonDto: ValidatorPersonDto) {
     return this.personService.registerPerson(validatorPersonDto);
   }
+
+  // @Post('update')
+  // @UseGuards(AuthJwtGuard)
+  // async update(@Body(ValidationPipe) validatorPersonDto: ValidatorPersonDto, idToUpdate: number) {
+  //   return this.personService.updatePerson(idToUpdate, validatorPersonDto);
+  // }
 
   @Post('get-list')
   @UseGuards(AuthJwtGuard)
@@ -42,11 +54,5 @@ export class PersonController {
     return this.personService.getListOfPeople(user);
   }
 
-
-  // @Post('registerUserWithPerson')
-  // async registerUser(@Body() registerUserDto: RegisterUserDto): Promise<any> {
-  //   const { person, ...userData } = registerUserDto;
-  //   return this.personService.registerUserWithPerson(userData, person);
-  // }
 
 }

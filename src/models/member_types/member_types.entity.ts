@@ -1,16 +1,17 @@
-import { ClassCellsPersons } from './cells_users.entity';
+import { ClassCellsPersons } from '../cells_persons/cells_persons.entity';
 
 import {
   Entity,
   PrimaryColumn,
   Column,
   OneToMany,
+  PrimaryGeneratedColumn, // Necesario para el 'id' serial
 } from 'typeorm';
 
 @Entity('member_types')
 export class ClassMemberType {
-  @PrimaryColumn({ length: 2 })
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ length: 20 })
   title: string;
@@ -20,5 +21,5 @@ export class ClassMemberType {
 
   @OneToMany(() => ClassCellsPersons, (cu) => cu.memberType)
   cellsPersons?: ClassCellsPersons[];
-  
+
 }

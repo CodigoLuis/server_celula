@@ -1,4 +1,4 @@
-import { ClassMeeting } from './meetings.entity';
+import { ClassMeeting } from '../meetings/meetings.entity';
 
 import {
   Entity,
@@ -6,12 +6,13 @@ import {
   Column,
   OneToOne,
   JoinColumn,
+  PrimaryGeneratedColumn, // Necesario para el 'id' serial
 } from 'typeorm';
 
 @Entity('meeting_details')
 export class ClassMeetingDetail {
-  @PrimaryColumn({ length: 40 })
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ nullable: true })
   dynamic?: boolean;

@@ -1,14 +1,14 @@
-import { ClassPerson } from './persons/persons.entity';
+import { ClassPerson } from '../persons/persons.entity';
 
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  OneToOne,
   JoinColumn,
 } from 'typeorm';
 
-@Entity('education')
+@Entity('educations')
 export class ClassEducation {
   @PrimaryGeneratedColumn()
   id: number;
@@ -22,7 +22,10 @@ export class ClassEducation {
   @Column({ nullable: true, name: 'prophetic_school' })
   propheticSchool?: boolean;
 
-  @ManyToOne(() => ClassPerson, (person) => person.education, { onDelete: 'CASCADE' })
+  @Column({ name: 'person_id' })
+  personId: number;
+
+  @OneToOne(() => ClassPerson, (person) => person.education, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'person_id' })
   person: ClassPerson;
 }

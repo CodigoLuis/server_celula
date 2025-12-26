@@ -1,10 +1,10 @@
 import { ClassPerson } from '../persons/persons.entity';
-import { ClassTerritory } from '../territories.entity';
-import { ClassUserType } from '../user_types.entity';
-import { ClassCell } from '../cells.entity';
-import { ClassTitle } from '../titles.entity';
-import { ClassMeetingPlace } from '../meeting_places.entity';
-import { ClassMeeting } from '../meetings.entity';
+import { ClassTerritory } from '../territories/territories.entity';
+import { ClassUserType } from '../user_types/user_types.entity';
+import { ClassCell } from '../cells/cells.entity';
+import { ClassTitle } from '../titles/titles.entity';
+import { ClassMeetingPlace } from '../meeting_places/meeting_places.entity';
+import { ClassMeeting } from '../meetings/meetings.entity';
 
 import { 
   Entity,
@@ -18,14 +18,14 @@ import {
 } from 'typeorm';
 
 @Entity('users')
-export class ClassUser  {
+export class ClassUser {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ length: 25 })
   username: string;
 
-  @Column({ length: 65 })
+  @Column({ length: 255 })
   password: string;
 
   @Column({ length: 100, nullable: true })

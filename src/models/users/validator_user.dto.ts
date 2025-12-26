@@ -1,43 +1,40 @@
-import { IsNotEmpty, IsString, MaxLength, IsEmail, IsBoolean, IsOptional, IsInt, IsIn } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, IsEmail, IsBoolean, IsOptional, IsInt, MinLength } from 'class-validator';
 
 export class ValidatorUserDto {
-  @IsNotEmpty({ message: 'El username es obligatorio' })
-  @IsString({ message: 'El username debe ser una cadena' })
-  @MaxLength(25, { message: 'El username no puede exceder 25 caracteres' })
+  @IsNotEmpty({ message: 'El nombre de usuario es obligatorio' })
+  @IsString({ message: 'El nombre de usuario debe ser una cadena de texto' })
+  @MaxLength(25, { message: 'El nombre de usuario no puede exceder los 25 caracteres' })
   username: string;
 
   @IsNotEmpty({ message: 'La contraseña es obligatoria' })
-  @IsString({ message: 'La contraseña debe ser una cadena' })
-  @MaxLength(25, { message: 'La contraseña no puede exceder 25 caracteres' })
-  // Nota: En producción, valida fortaleza (e.g., con regex) y hashea la contraseña antes de guardar
+  @IsString({ message: 'La contraseña debe ser una cadena de texto' })
+
+  @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
+  @MaxLength(25, { message: 'La contraseña no puede exceder los 25 caracteres' })
   password: string;
 
   @IsOptional() 
-  @IsEmail({}, { message: 'El email debe tener un formato válido' })
-  @MaxLength(100, { message: 'El email no puede exceder 100 caracteres' })
+  @IsEmail({}, { message: 'El formato del correo electrónico no es válido' })
+  @MaxLength(100, { message: 'El correo electrónico no puede exceder los 100 caracteres' })
   email?: string;
 
-  @IsNotEmpty({ message: 'El campo active es obligatorio' })
-  @IsBoolean({ message: 'Active debe ser un booleano' })
+  @IsNotEmpty({ message: 'El estado de actividad (active) es obligatorio' })
+  @IsBoolean({ message: 'El campo active debe ser un valor booleano (true/false)' })
   active: boolean;
 
-  // created_at y updated_at se manejan automáticamente en la entidad (no en DTO)
-
   @IsOptional()
-  @IsInt({ message: 'leader_id debe ser un entero' })
+  @IsInt({ message: 'El ID del líder debe ser un número entero' })
   leader?: number;
 
-  @IsNotEmpty({ message: 'person_id es obligatorio' })
-  @IsInt({ message: 'person_id debe ser un entero' })
+  @IsNotEmpty({ message: 'El ID de la persona es obligatorio' })
+  @IsInt({ message: 'El ID de la persona debe ser un número entero' })
   person: number;
 
-  @IsNotEmpty({ message: 'user_type_id es obligatorio' })
-  @IsString({ message: 'user_type_id debe ser una cadena' })
-  @MaxLength(2, { message: 'user_type_id no puede exceder 2 caracteres' })
-  userType: string;
+  @IsNotEmpty({ message: 'El ID del tipo de usuario es obligatorio' })
+  @IsInt({ message: 'El ID del tipo de usuario debe ser un número entero' })
+  userType: number;
 
-  @IsNotEmpty({ message: 'territory_id es obligatorio' })
-  @IsString({ message: 'territory_id debe ser una cadena' })
-  @MaxLength(2, { message: 'territory_id no puede exceder 2 caracteres' })
-  territory: string;
+  @IsNotEmpty({ message: 'El ID del territorio es obligatorio' })
+  @IsInt({ message: 'El ID del territorio debe ser un número entero' })
+  territory: number;
 }

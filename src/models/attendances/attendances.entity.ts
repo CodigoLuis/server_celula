@@ -1,6 +1,6 @@
-import { ClassMeeting } from './meetings.entity';
-import { ClassAttendanceType } from './attendance_types.entity';
-import { ClassPerson } from './persons/persons.entity';
+import { ClassMeeting } from '../meetings/meetings.entity';
+import { ClassAttendanceType } from '../attendance_types/attendance_types.entity';
+import { ClassPerson } from '../persons/persons.entity';
 
 import {
   Entity,
@@ -8,15 +8,19 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  PrimaryGeneratedColumn, // Necesario para el 'id' serial
 } from 'typeorm';
 
 @Entity('attendances')
 export class ClassAttendance {
-  @PrimaryColumn({ name: 'user_id', type: 'int' })
-  userId: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @PrimaryColumn({ name: 'meeting_id', type: 'varchar', length: 40 })
-  meetingId: string;
+  @Column({ name: 'person_id', type: 'int' })
+  personId: number;
+
+  @Column({ name: 'meeting_id', type: 'int' })
+  meetingId: number;
 
   @ManyToOne(() => ClassPerson, (person) => person.attendances, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'person_id' })
@@ -31,5 +35,5 @@ export class ClassAttendance {
   attendanceType: ClassAttendanceType;
 
   @Column({ nullable: true })
-  attendance?: boolean;
+  attended?: boolean;
 }

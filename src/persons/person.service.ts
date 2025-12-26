@@ -1,12 +1,12 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ClassPerson } from '../models/persons/persons.entity';
 import { ValidatorPersonDto } from '../models/persons/validator_person.dto';
 import { ClassUser } from '../models/users/users.entity';
-import { ClassUserType } from 'src/models/user_types.entity';
-import { ClassTerritory } from 'src/models/territories.entity';
+import { ClassUserType } from 'src/models/user_types/user_types.entity';
+import { ClassTerritory } from 'src/models/territories/territories.entity';
 
 
 @Injectable()
@@ -20,7 +20,7 @@ export class PersonService {
   ) { }
 
 
-  async existingPerson(idNumber: string) {
+  async queryDataByIdNumberPerson(idNumber: string) {
     const existing = await this.personRepository.findOne({
       where: { idNumber: idNumber },
     });
@@ -42,10 +42,32 @@ export class PersonService {
 
   }
 
+  async queryDataById(idPerson: number) {
+
+    const data = await this.personRepository.findOne({
+      where: { id: idPerson },
+    });
+
+    let isUser: boolean = false
+
+    if (data) {
+
+      const existingUser = await this.userRepository.findOne({
+        where: { person: { id: data.id } },
+      });
+
+      if (existingUser) isUser = true;
+
+    }
+
+    if (isUser === true) return { ...data, isUser: isUser };
+    else return data;
+
+  }
 
   async registerPerson(validatorPersonDto: ValidatorPersonDto): Promise<ClassPerson> {
 
-    const existing = await this.existingPerson(validatorPersonDto.idNumber);
+    const existing = await this.queryDataByIdNumberPerson(validatorPersonDto.idNumber);
 
     if (existing) {
       throw new ConflictException(
@@ -71,76 +93,55 @@ export class PersonService {
 
   }
 
+  // async updatePerson(
+  //   idToUpdate: number,
+  //   updateDataDto: ValidatorPersonDto,
+  // ): Promise<ClassPerson> {
+
+  //   const existingPerson = await this.queryDataById(idToUpdate);
+
+  //   if (!existingPerson) {
+  //     throw new NotFoundException(
+  //       `La persona no se encuentra registrada.`,
+  //     );
+  //   }
+
+  //   const updatedPerson = Object.assign(existingPerson, updateDataDto);
+  //   // Alternativa: const updatedPerson = this.personRepository.merge(existingPerson, updateDataDto);
+
+  //   return await this.personRepository.save(updatedPerson);
+  // }
 
   async getListOfPeople(user): Promise<ClassPerson[]> {
 
-    const listPeople = await this.personRepository.find({ where: { gender: user.person.gender } });
+    // const listPeople = await this.personRepository.find({ where: { gender: user.person.gender } });
+    const people = await this.personRepository
+      .createQueryBuilder('person')
+      .leftJoin('person.users', 'user')
+      .addSelect('user.id')
+      .leftJoin('person.education', 'education')
+      .addSelect(['education.id', 'education.consolidationLevel', 'education.leaderSchool', 'education.propheticSchool'])
+      .getMany();
 
-    return listPeople;
+    const formattedPeople: any = [];
+
+    for (const person of people) {
+
+      const userId = person.users && person.users.length > 0
+        ? true
+        : false;
+
+      const personEntry: any = { ...person };
+      personEntry.isUser = userId;
+
+      delete personEntry.users;
+
+      formattedPeople.push(personEntry);
+    }
+
+    return formattedPeople;
+
   }
 
-  //     async getListOfPeople(
-  //     userData: Partial<ClassUser>,
-  //     personData: Partial<ClassPerson>,
-  //   ): Promise<ClassUser> {
-
-  //     return this.dataSource.transaction(async (manager) => {
-
-  //       // Validar si username ya existe
-  //       const existingUser = await manager.findOne(ClassUser, {
-  //         where: { username: userData.username },
-  //       });
-
-  //       if (existingUser) {
-  //         throw new ConflictException('El nombre de usuario ya está en uso');
-  //       }
-
-  //       // Validar si idNumber ya existe (solo si idNumber fue enviado)
-  //       if (personData.idNumber) {
-
-  //         const existingPerson = await manager.findOne(ClassPerson, {
-  //           where: { idNumber: personData.idNumber },
-  //         });
-
-  //         if (existingPerson) {
-  //           throw new ConflictException('El número de identificación ya está registrado');
-  //         }
-
-  //       }
-
-  //       const now = new Date();
-  //       Object.assign(personData, { createdAt: now });
-
-  //       // Crear y guardar persona
-  //       const person = manager.create(ClassPerson, personData);
-  //       const savedPerson = await manager.save(person);
-
-  //       // Encriptar la contraseña si existe
-  //       let hashedPassword: string | undefined = undefined;
-  //       if (userData.password) {
-  //         const saltRounds = 10;
-  //         hashedPassword = await bcrypt.hash(userData.password, saltRounds);
-  //       }
-
-  //       // Obtener las entidades userType y territory 
-  //       const userType = await manager.findOneOrFail(ClassUserType, { where: { id: 'LI' } });
-  //       const territory = await manager.findOneOrFail(ClassTerritory, { where: { id: 'RD' } });
-
-  //       Object.assign(userData, {
-  //         password: hashedPassword,
-  //         active: true,
-  //         createdAt: now,
-  //         person: savedPerson,
-  //         userType: userType,
-  //         territory: territory
-  //       });
-
-  //       // Crear usuario y asignar persona y relaciones
-  //       const user = manager.create(ClassUser, userData);
-
-  //       return manager.save(user);
-  //     });
-
-  //   }
 
 }

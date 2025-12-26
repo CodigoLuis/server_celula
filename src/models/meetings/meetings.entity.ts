@@ -1,11 +1,11 @@
-import { ClassUser  } from './users/users.entity';
-import { ClassCell } from './cells.entity';
-import { ClassTitle } from './titles.entity';
-import { ClassMeetingPlace } from './meeting_places.entity';
-import { ClassMeetingDetail } from './meeting_details.entity';
-import { ClassAttendance } from './attendances.entity';
-
-import { 
+import { ClassUser } from '../users/users.entity';
+import { ClassCell } from '../cells/cells.entity';
+import { ClassTitle } from '../titles/titles.entity';
+import { ClassMeetingPlace } from '../meeting_places/meeting_places.entity';
+import { ClassMeetingDetail } from '../meeting_details/meeting_details.entity';
+import { ClassAttendance } from '../attendances/attendances.entity';
+import { ClassSpecialActivity } from '../special_activities/special_activities.entity'; // Importado
+import {
   Entity,
   PrimaryColumn,
   Column,
@@ -15,12 +15,13 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn, // Necesario para el 'id' serial
 } from 'typeorm';
 
 @Entity('meetings')
 export class ClassMeeting {
-  @PrimaryColumn({ length: 40 })
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'date' })
   date: string;
@@ -44,13 +45,9 @@ export class ClassMeeting {
   @JoinColumn({ name: 'cell_id' })
   cell: ClassCell;
 
-  @ManyToOne(() => ClassUser , (user) => user.meetings, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => ClassUser, (user) => user.meetings, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'user_id' })
-  user: ClassUser ;
-
-  @ManyToOne(() => ClassMeetingPlace, (place) => place.meetings, { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'meeting_place_id' })
-  meetingPlace: ClassMeetingPlace;
+  user: ClassUser;
 
   @ManyToOne(() => ClassTitle, (title) => title.meetings, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'title_id' })
@@ -61,4 +58,7 @@ export class ClassMeeting {
 
   @OneToMany(() => ClassAttendance, (attendance) => attendance.meeting)
   attendances?: ClassAttendance[];
+
+  @OneToMany(() => ClassSpecialActivity, (sa) => sa.meeting)
+  specialActivities?: ClassSpecialActivity[];
 }

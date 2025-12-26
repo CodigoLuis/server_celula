@@ -1,4 +1,4 @@
-import { ClassAttendance } from './attendances.entity';
+import { ClassAttendance } from '../attendances/attendances.entity';
 
 import {
   Entity,
@@ -9,12 +9,13 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn, // Necesario para el 'id' serial
 } from 'typeorm';
 
 @Entity('attendance_types')
 export class ClassAttendanceType {
-  @PrimaryColumn({ length: 2 })
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ length: 20 })
   title: string;
