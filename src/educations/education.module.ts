@@ -10,4 +10,5 @@ import { EducationController } from './education.controller';
   controllers: [EducationController],
   providers: [EducationService],
 })
+
 export class PersonModule {}

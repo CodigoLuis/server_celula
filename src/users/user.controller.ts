@@ -1,37 +1,57 @@
-import { Controller, Post, Body, Get, Query, ValidationPipe, UseGuards, Req } from '@nestjs/common';
+import { 
+  Controller, 
+  Post, 
+  Body, 
+  Get, 
+  Query, 
+  Put, 
+  Param, 
+  UseGuards, 
+  Req, 
+  ParseIntPipe, 
+  ValidationPipe 
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { ValidatorUserDto } from '../models/users/validator_user.dto';
-import { ClassUser } from '../models/users/users.entity';
 import { AuthJwtGuard } from '../authJWT/auth_jwt.guard';
-import { TransformAndValidatePipe } from './transform_and_validate.pipe';
-
+import { ClassUser } from '../models/users/users.entity';
 
 @Controller('user')
+@UseGuards(AuthJwtGuard)
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-
   @Get('existing-name')
-  @UseGuards(AuthJwtGuard)
   async existing(@Query('nameUser') nameUser: string) {
     const result = await this.userService.existingUserName(nameUser);
-    return { data: result, existing: result ? true : false };
+    return { data: result, existing: !!result };
   }
 
   @Post('register')
-  @UseGuards(AuthJwtGuard)
-  async register(@Body(TransformAndValidatePipe) validatorUserDto: ValidatorUserDto, @Req() req) {
-    const user: ClassUser = req.user;
+  async register(
+    @Body(new ValidationPipe({ whitelist: true })) validatorUserDto: ValidatorUserDto, 
+    @Req() req
+  ) {
+    const authUser: ClassUser = req.user;
+    return this.userService.registerUser(validatorUserDto, authUser);
+  }
 
-    return this.userService.registerUser(validatorUserDto, user);
+  @Put('update/:id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(new ValidationPipe({ whitelist: true })) validatorUserDto: ValidatorUserDto
+  ) {
+    return this.userService.updateUser(id, validatorUserDto);
   }
 
   @Post('get-list')
-  @UseGuards(AuthJwtGuard)
   async getList(@Req() req) {
     const user: ClassUser = req.user;
-
     return this.userService.getListOfUser(user);
   }
 
+  @Get('profile')
+  async getProfile(@Req() req) {
+    return this.userService.profileDetails(req.user);
+  }
 }

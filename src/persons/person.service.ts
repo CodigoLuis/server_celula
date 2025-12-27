@@ -1,147 +1,65 @@
-import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
 import { ClassPerson } from '../models/persons/persons.entity';
-import { ValidatorPersonDto } from '../models/persons/validator_person.dto';
 import { ClassUser } from '../models/users/users.entity';
-import { ClassUserType } from 'src/models/user_types/user_types.entity';
-import { ClassTerritory } from 'src/models/territories/territories.entity';
-
+import { ValidatorPersonDto } from '../models/persons/validator_person.dto';
 
 @Injectable()
 export class PersonService {
   constructor(
-    private dataSource: DataSource,
     @InjectRepository(ClassUser)
     private readonly userRepository: Repository<ClassUser>,
     @InjectRepository(ClassPerson)
     private readonly personRepository: Repository<ClassPerson>,
-  ) { }
+  ) {}
 
+  private async findPersonWithUserStatus(where: object) {
+    const person = await this.personRepository.findOne({
+      where,
+      relations: ['users'], 
+    });
+    if (!person) return null;
+
+    const { users, ...data } = person;
+    return { ...data, isUser: !!users };
+  }
 
   async queryDataByIdNumberPerson(idNumber: string) {
-    const existing = await this.personRepository.findOne({
-      where: { idNumber: idNumber },
-    });
-
-    let isUser: boolean = false
-
-    if (existing) {
-
-      const existingUser = await this.userRepository.findOne({
-        where: { person: { id: existing.id } },
-      });
-
-      if (existingUser) isUser = true;
-
-    }
-
-    if (isUser === true) return { ...existing, isUser: isUser };
-    else return existing;
-
+    return this.findPersonWithUserStatus({ idNumber });
   }
 
-  async queryDataById(idPerson: number) {
-
-    const data = await this.personRepository.findOne({
-      where: { id: idPerson },
-    });
-
-    let isUser: boolean = false
-
-    if (data) {
-
-      const existingUser = await this.userRepository.findOne({
-        where: { person: { id: data.id } },
-      });
-
-      if (existingUser) isUser = true;
-
-    }
-
-    if (isUser === true) return { ...data, isUser: isUser };
-    else return data;
-
+  async queryDataById(id: number) {
+    return this.findPersonWithUserStatus({ id });
   }
 
-  async registerPerson(validatorPersonDto: ValidatorPersonDto): Promise<ClassPerson> {
+  async registerPerson(dto: ValidatorPersonDto): Promise<ClassPerson> {
+    const existing = await this.personRepository.findOne({ where: { idNumber: dto.idNumber } });
+    if (existing) throw new ConflictException('La identificación ya existe.');
 
-    const existing = await this.queryDataByIdNumberPerson(validatorPersonDto.idNumber);
-
-    if (existing) {
-      throw new ConflictException(
-        `El número de identificación "${validatorPersonDto.idNumber}" ya está registrado en el sistema.`,
-      );
-    }
-
-    // Crea una nueva instancia de la entidad
-    const person = this.personRepository.create(validatorPersonDto);
-
-    // Guarda en la base de datos
+    const person = this.personRepository.create(dto);
     return await this.personRepository.save(person);
-
-    // {
-    //   "firstName": "Juan00",
-    //   "lastName": "Pérez00",
-    //   "gender": "M",
-    //   "idNumber": "123456789012", 
-    //   "maritalStatus": "Soltero",
-    //   "phone": "123456789",
-    //   "birthDate": "1990-01-01"
-    // }
-
   }
 
-  // async updatePerson(
-  //   idToUpdate: number,
-  //   updateDataDto: ValidatorPersonDto,
-  // ): Promise<ClassPerson> {
+  async updatePerson(id: number, dto: ValidatorPersonDto): Promise<ClassPerson> {
+    const person = await this.personRepository.findOneBy({ id });
+    if (!person) throw new NotFoundException('Persona no encontrada');
+    
+    const updated = this.personRepository.merge(person, dto);
+    return await this.personRepository.save(updated);
+  }
 
-  //   const existingPerson = await this.queryDataById(idToUpdate);
-
-  //   if (!existingPerson) {
-  //     throw new NotFoundException(
-  //       `La persona no se encuentra registrada.`,
-  //     );
-  //   }
-
-  //   const updatedPerson = Object.assign(existingPerson, updateDataDto);
-  //   // Alternativa: const updatedPerson = this.personRepository.merge(existingPerson, updateDataDto);
-
-  //   return await this.personRepository.save(updatedPerson);
-  // }
-
-  async getListOfPeople(user): Promise<ClassPerson[]> {
-
-    // const listPeople = await this.personRepository.find({ where: { gender: user.person.gender } });
+  async getListOfPeople(): Promise<any[]> {
     const people = await this.personRepository
       .createQueryBuilder('person')
-      .leftJoin('person.users', 'user')
-      .addSelect('user.id')
-      .leftJoin('person.education', 'education')
-      .addSelect(['education.id', 'education.consolidationLevel', 'education.leaderSchool', 'education.propheticSchool'])
+      .leftJoinAndSelect('person.users', 'user')
+      .leftJoinAndSelect('person.education', 'education')
       .getMany();
 
-    const formattedPeople: any = [];
-
-    for (const person of people) {
-
-      const userId = person.users && person.users.length > 0
-        ? true
-        : false;
-
-      const personEntry: any = { ...person };
-      personEntry.isUser = userId;
-
-      delete personEntry.users;
-
-      formattedPeople.push(personEntry);
-    }
-
-    return formattedPeople;
-
+    return people.map(p => {
+      const { users, ...data } = p;
+      return { ...data, isUser: !!users };
+    });
   }
-
-
+  
 }

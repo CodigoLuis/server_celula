@@ -18,7 +18,8 @@ export class ValidatorUserDto {
   @MaxLength(100, { message: 'El correo electrónico no puede exceder los 100 caracteres' })
   email?: string;
 
-  @IsNotEmpty({ message: 'El estado de actividad (active) es obligatorio' })
+  @IsOptional() 
+  // @IsNotEmpty({ message: 'El estado de actividad (active) es obligatorio' })
   @IsBoolean({ message: 'El campo active debe ser un valor booleano (true/false)' })
   active: boolean;
 

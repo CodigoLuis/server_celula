@@ -1,49 +1,81 @@
-import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
-import { ClassEducation } from '../models/educations/educations.entity';
-
-import { ValidatorPersonDto } from '../models/persons/validator_person.dto';
+import { Repository } from 'typeorm';
+import { ClassEducation } from '../models/educations/educations.entity'; // Ajusta la ruta
+import { ValidatorEducationDto } from '../models/educations/validator_education.dto'; // Ajusta la ruta
 
 @Injectable()
 export class EducationService {
   constructor(
-    private dataSource: DataSource,
     @InjectRepository(ClassEducation)
-    private readonly userRepository: Repository<ClassEducation>,
+    private readonly educationRepository: Repository<ClassEducation>,
   ) { }
 
-
-  // async getListOfPeople(user): Promise<ClassPerson[]> {
-
-  //   // const listPeople = await this.personRepository.find({ where: { gender: user.person.gender } });
-  //   const people = await this.personRepository
-  //     .createQueryBuilder('person')
-  //     .leftJoin('person.users', 'user')
-  //     .addSelect('user.id')
-  //     .leftJoin('person.education', 'education')
-  //     .addSelect(['education.id', 'education.consolidationLevel', 'education.leaderSchool', 'education.propheticSchool'])
-  //     .getMany();
-
-  //   const formattedPeople: any = [];
-
-  //   for (const person of people) {
-
-  //     const userId = person.users && person.users.length > 0
-  //       ? true
-  //       : false;
-
-  //     const personEntry: any = { ...person };
-  //     personEntry.isUser = userId;
-
-  //     delete personEntry.users;
-
-  //     formattedPeople.push(personEntry);
-  //   }
-
-  //   return formattedPeople;
-
+  // Mostrar todos los registros
+  // async findAll(): Promise<ClassEducation[]> {
+  //   return await this.educationRepository.find({
+  //     relations: ['person'], 
+  //   });
   // }
+
+  // Mostrar un registro por ID de persona
+  async findByPersonId(personId: number): Promise<ClassEducation> {
+    const record = await this.educationRepository.findOne({
+      where: { personId },
+      relations: ['person'],
+    });
+
+    if (!record) {
+      throw new NotFoundException(`No se encontró registro educativo para la persona con ID ${personId}`);
+    }
+    return record;
+  }
+
+  // Registrar (Crear)
+  async create(createEducationDto: ValidatorEducationDto): Promise<ClassEducation> {
+    
+    const { person, ...rest } = createEducationDto; // Extraemos 'person' para que no choque
+
+    const existing = await this.educationRepository.findOne({
+      where: { personId: person },
+    });
+
+    if (existing) {
+      throw new BadRequestException('Esta persona ya tiene un registro educativo.');
+    }
+
+    // Creamos el objeto asegurando que personId reciba el número
+    const newEducation = this.educationRepository.create({
+      ...rest,
+      personId: person,
+    });
+
+    return await this.educationRepository.save(newEducation);
+
+  }
+
+  // Actualizar
+  async update(personId: number, updateEducationDto: ValidatorEducationDto): Promise<ClassEducation> {
+
+    const education = await this.educationRepository.findOne({
+      where: { personId },
+    });
+
+    if (!education) {
+      throw new NotFoundException(`No existe registro para la persona ${personId}`);
+    }
+
+    const { person, ...rest } = updateEducationDto;
+
+    // Fusionamos rest (los campos de texto/booleanos) y asignamos el ID manualmente
+    const updatedEducation = this.educationRepository.merge(education, {
+      ...rest,
+      personId: person || education.personId,
+    });
+
+    return await this.educationRepository.save(updatedEducation);
+
+  }
 
 
 }
