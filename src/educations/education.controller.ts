@@ -14,7 +14,7 @@ import { AuthJwtGuard } from '../authJWT/auth_jwt.guard';
 @Controller('education')
 @UseGuards(AuthJwtGuard) // Protege todas las rutas de este controlador
 export class EducationController {
-  constructor(private readonly educationService: EducationService) {}
+  constructor(private readonly educationService: EducationService) { }
 
   // @Get()
   // async findAll(@Req() req) {
@@ -28,9 +28,9 @@ export class EducationController {
     return this.educationService.findByPersonId(id);
   }
 
-  @Post()
+  @Post('create')
   async create(
-    @Body() dto: ValidatorEducationDto, 
+    @Body() dto: ValidatorEducationDto,
     // @Req() req
   ) {
     // const currentUser: ClassUser = req.user;
@@ -38,14 +38,11 @@ export class EducationController {
     return this.educationService.create(dto);
   }
 
-  @Put(':personId')
+  @Post('update')
   async update(
-    @Param('personId', ParseIntPipe) id: number, 
     @Body() dto: ValidatorEducationDto,
-    // @Req() req
   ) {
-    // const currentUser: ClassUser = req.user;
-    return this.educationService.update(id, dto);
+    return this.educationService.update(dto);
   }
 
 }

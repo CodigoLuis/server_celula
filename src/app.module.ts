@@ -24,6 +24,7 @@ import { AuthModule } from './auths/auth.module';
 import { PersonModule } from './persons/person.module';
 import { OptionsModule } from './options/options.module';
 import { UserModule } from './users/user.module';
+import { EducationModule } from './educations/education.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { UserModule } from './users/user.module';
     PersonModule, 
     OptionsModule,
     UserModule,
+    EducationModule,
   ],
   controllers: [],  
   providers: [],

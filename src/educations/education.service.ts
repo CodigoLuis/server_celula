@@ -26,7 +26,7 @@ export class EducationService {
     });
 
     if (!record) {
-      throw new NotFoundException(`No se encontró registro educativo para la persona con ID ${personId}`);
+      throw new NotFoundException(`No se encontró registro educativo para la persona`);
     }
     return record;
   }
@@ -55,19 +55,18 @@ export class EducationService {
   }
 
   // Actualizar
-  async update(personId: number, updateEducationDto: ValidatorEducationDto): Promise<ClassEducation> {
+  async update(updateEducationDto: ValidatorEducationDto): Promise<ClassEducation> {
 
     const education = await this.educationRepository.findOne({
-      where: { personId },
+      where: { personId: updateEducationDto.person }, 
     });
 
     if (!education) {
-      throw new NotFoundException(`No existe registro para la persona ${personId}`);
+      throw new NotFoundException(`No existe registro para la persona`);
     }
 
     const { person, ...rest } = updateEducationDto;
 
-    // Fusionamos rest (los campos de texto/booleanos) y asignamos el ID manualmente
     const updatedEducation = this.educationRepository.merge(education, {
       ...rest,
       personId: person || education.personId,
