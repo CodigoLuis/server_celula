@@ -3,7 +3,7 @@ import { ClassUser } from '../users/users.entity';
 import { ClassCellsPersons } from '../cells_persons/cells_persons.entity'; // Asegúrate que el nombre del archivo sea cells_persons.entity.ts
 import { ClassMeeting } from '../meetings/meetings.entity';
 import { ClassTerritory } from '../territories/territories.entity';
-import { ClassMeetingPlace } from '../meeting_places/meeting_places.entity'; // Importado
+// import { ClassMeetingPlace } from '../meeting_places/meeting_places.entity'; // Importado
 import { ClassPredeterminedMeetingPlace } from '../predetermined_meeting_places/predetermined_meeting_places.entity'; // Importado
 import {
   Entity,
@@ -47,10 +47,6 @@ export class ClassCell {
   @ManyToOne(() => ClassTerritory, (territory) => territory.cells, { onDelete: 'RESTRICT' }) // Corregido: territorio.cells
   @JoinColumn({ name: 'territory_id' })
   territory: ClassTerritory;
-
-  @ManyToOne(() => ClassMeetingPlace, (place) => place.cells, { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'meeting_place_id' })
-  meetingPlace: ClassMeetingPlace;
 
   @OneToMany(() => ClassCellsPersons, (cu) => cu.cell)
   cellsPersons?: ClassCellsPersons[];

@@ -1,6 +1,6 @@
 import { ClassUser } from '../users/users.entity';
 import { ClassCell } from '../cells/cells.entity';
-import { ClassTitle } from '../titles/titles.entity';
+import { ClassMeetingTitles } from '../meeting_titles/meeting_titles.entity';
 import { ClassMeetingPlace } from '../meeting_places/meeting_places.entity';
 import { ClassMeetingDetail } from '../meeting_details/meeting_details.entity';
 import { ClassAttendance } from '../attendances/attendances.entity';
@@ -49,9 +49,9 @@ export class ClassMeeting {
   @JoinColumn({ name: 'user_id' })
   user: ClassUser;
 
-  @ManyToOne(() => ClassTitle, (title) => title.meetings, { onDelete: 'RESTRICT' })
-  @JoinColumn({ name: 'title_id' })
-  title: ClassTitle;
+  @ManyToOne(() => ClassMeetingTitles, (meetingTitle) => meetingTitle.meetings, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'meeting_title_id' })
+  meetingTitles: ClassMeetingTitles;
 
   @OneToOne(() => ClassMeetingDetail, (detail) => detail.meeting)
   meetingDetail?: ClassMeetingDetail;

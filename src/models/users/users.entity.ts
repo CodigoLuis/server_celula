@@ -2,7 +2,7 @@ import { ClassPerson } from '../persons/persons.entity';
 import { ClassTerritory } from '../territories/territories.entity';
 import { ClassUserType } from '../user_types/user_types.entity';
 import { ClassCell } from '../cells/cells.entity';
-import { ClassTitle } from '../titles/titles.entity';
+import { ClassMeetingTitles } from '../meeting_titles/meeting_titles.entity';
 import { ClassMeetingPlace } from '../meeting_places/meeting_places.entity';
 import { ClassMeeting } from '../meetings/meetings.entity';
 
@@ -62,8 +62,8 @@ export class ClassUser {
   @OneToMany(() => ClassCell, (cell) => cell.user)
   cells?: ClassCell[];
 
-  @OneToMany(() => ClassTitle, (title) => title.user)
-  titles?: ClassTitle[];
+  @OneToMany(() => ClassMeetingTitles, (meetingTitle) => meetingTitle.user)
+  meetingTitles?: ClassMeetingTitles[];
 
   @OneToMany(() => ClassMeetingPlace, (place) => place.user)
   meetingPlaces?: ClassMeetingPlace[];

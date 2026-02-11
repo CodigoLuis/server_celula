@@ -69,12 +69,14 @@ CREATE TABLE "cell_types" (
 
 CREATE TABLE "meeting_places" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
-  "title" varchar(30) NOT NULL,
-  "details" varchar(150) NOT NULL,
-  "location" varchar(60),
+  "title" VARCHAR(100) NOT NULL, -- Más espacio para nombres creativos
+  "details" TEXT,                -- Cambiado a TEXT para evitar cortes innecesarios
+  "address" VARCHAR(255) NOT NULL,        -- Renombrado de 'location' para claridad
+  "latitude" NUMERIC(10, 8),     -- Coordenada exacta
+  "longitude" NUMERIC(11, 8),    -- Coordenada exacta
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
-  "user_id" int NOT NULL,
+  "user_id" INT NOT NULL,
   FOREIGN KEY ("user_id") REFERENCES "users" ("id")
 );
 
@@ -84,14 +86,12 @@ CREATE TABLE "cells" (
   "active" boolean NOT NULL,
   "territory_id" int NOT NULL, 
   "cell_type_id" int NOT NULL, 
-  "meeting_place_id" int NOT NULL,
   "user_id" int NOT NULL,
   "start_date" timestamp,
   "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" timestamp,
   FOREIGN KEY ("territory_id") REFERENCES "territories" ("id"),
   FOREIGN KEY ("cell_type_id") REFERENCES "cell_types" ("id"),
-  FOREIGN KEY ("meeting_place_id") REFERENCES "meeting_places" ("id"),
   FOREIGN KEY ("user_id") REFERENCES "users" ("id")
 );
 
@@ -127,7 +127,7 @@ CREATE TABLE "cells_persons" (
 
 ------------------------------------------------------------------------------------------------
 
-CREATE TABLE "titles" (
+CREATE TABLE "meeting_titles" (
   "id" SERIAL UNIQUE PRIMARY KEY NOT NULL,
   "title" varchar(30) NOT NULL,
   "description" varchar(150) NOT NULL,
@@ -149,10 +149,10 @@ CREATE TABLE "meetings" (
   "updated_at" timestamp,
   "cell_id" int NOT NULL,
   "user_id" int NOT NULL,
-  "title_id" int NOT NULL,
+  "meeting_title_id" int NOT NULL,
   FOREIGN KEY ("cell_id") REFERENCES "cells" ("id"),
   FOREIGN KEY ("user_id") REFERENCES "users" ("id"),
-  FOREIGN KEY ("title_id") REFERENCES "titles" ("id")
+  FOREIGN KEY ("meeting_title_id") REFERENCES "meeting_titles" ("id")
 );
 
 

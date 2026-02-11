@@ -88,6 +88,7 @@ export class AuthService {
         'territory.name',  
         'territory.male',  
         'userType.title',
+        'person.id',
         'person.firstName',
         'person.lastName',
         'person.gender',

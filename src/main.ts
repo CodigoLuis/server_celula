@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express'; // Importante para tipos
+import { join } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // app.enableCors();
-
   app.enableCors({
     origin: true,
     //   // origin: [
@@ -20,7 +21,14 @@ async function bootstrap() {
     //   optionsSuccessStatus: 204,
   });
 
+  // Esto permite que: http://TU_IP:3000/public/profileFiles/nombre_archivo.jpg funcione
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/public', // Prefijo para la URL
+  });
+
   await app.listen(3000, '0.0.0.0');
   // await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+
 }
 bootstrap();
+

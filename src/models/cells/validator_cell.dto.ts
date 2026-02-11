@@ -15,7 +15,8 @@ export class ValidatorCellDto {
   @MaxLength(20, { message: 'El título no puede exceder los 20 caracteres' })
   title: string;
 
-  @IsNotEmpty({ message: 'El estado activo es obligatorio' })
+  @IsOptional()
+  // @IsNotEmpty({ message: 'El estado activo es obligatorio' })
   @IsBoolean({ message: 'El campo active debe ser un valor booleano' })
   active: boolean;
 

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Put, Param, UseGuards, Req, ParseIntPipe, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, Put, Param, UseGuards, Req, ParseIntPipe, ValidationPipe, Get, Query } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { ValidatorPersonDto } from '../models/persons/validator_person.dto';
 import { AuthJwtGuard } from '../authJWT/auth_jwt.guard';
@@ -6,7 +6,7 @@ import { AuthJwtGuard } from '../authJWT/auth_jwt.guard';
 @Controller('person')
 @UseGuards(AuthJwtGuard)
 export class PersonController {
-  constructor(private readonly personService: PersonService) {}
+  constructor(private readonly personService: PersonService) { }
 
   @Post('existing')
   async existing(@Body() data: { idNumber: string }) {
@@ -34,5 +34,11 @@ export class PersonController {
   async getList() {
     return this.personService.getListOfPeople();
   }
-  
+
+  @Get('get-list-cell')
+  async getListCell(@Query('territoryId') territoryId: number) {
+    const personsOfCell = await this.personService.getListOfPeopleforCell(territoryId);
+    return { data: personsOfCell, count: personsOfCell.length };
+  }
+
 }

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, ConflictException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeepPartial } from 'typeorm';
 import { ClassUser } from '../models/users/users.entity';
+import { ClassPerson } from '../models/persons/persons.entity';
 import { ValidatorUserDto } from '../models/users/validator_user.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -10,6 +11,8 @@ export class UserService {
   constructor(
     @InjectRepository(ClassUser)
     private readonly userRepository: Repository<ClassUser>,
+    @InjectRepository(ClassPerson)
+    private readonly personRepository: Repository<ClassPerson>,
   ) { }
 
   async existingUserName(userName: string) {
@@ -78,10 +81,10 @@ export class UserService {
       .leftJoinAndSelect('user.territory', 'territory')
       .leftJoinAndSelect('user.leader', 'leader')
       .select([
-        'user.id', 'user.active', 'user.username',
+        'user.id', 'user.active', 'user.username', 'user.email', 'user.createdAt',
         'territory.id', 'territory.name', 'territory.color',
         'userType.id', 'userType.title',
-        'person.firstName', 'person.lastName', 'person.gender',
+        'person.firstName', 'person.lastName', 'person.gender', 'person.phone', 'person.birthDate', 'person.idNumber', 'person.photo',
         'leader.id', 'leader.username',
       ])
       .getMany();
@@ -99,4 +102,21 @@ export class UserService {
 
     return dataUser;
   }
-}
+
+  async updateAvatar(idUser: number, fileName: string): Promise<String> {
+    const user = await this.userRepository.findOne({
+      where: { id: idUser },
+      relations: ['person'],
+    });
+
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    if (!user.person) throw new NotFoundException('El usuario no tiene una persona asociada');
+
+    user.person.photo = fileName;
+    await this.personRepository.save(user.person);
+
+    return `Exito, foto de perfil actualizada`;
+  }
+
+
+} 

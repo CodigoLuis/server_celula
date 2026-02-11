@@ -8,7 +8,7 @@ import { ClassTerritory } from './models/territories/territories.entity';
 import { ClassUserType } from './models/user_types/user_types.entity';
 import { ClassCell } from './models/cells/cells.entity';
 import { ClassCellsPersons } from './models/cells_persons/cells_persons.entity';
-import { ClassTitle } from './models/titles/titles.entity';
+import { ClassMeetingTitles } from './models/meeting_titles/meeting_titles.entity';
 import { ClassMeetingPlace } from './models/meeting_places/meeting_places.entity';
 import { ClassMeeting } from './models/meetings/meetings.entity';
 import { ClassAttendanceType } from './models/attendance_types/attendance_types.entity';
@@ -25,6 +25,8 @@ import { PersonModule } from './persons/person.module';
 import { OptionsModule } from './options/options.module';
 import { UserModule } from './users/user.module';
 import { EducationModule } from './educations/education.module';
+import { MeetingPlacesModule } from './meetingPlaces/meetingPlaces.module';
+import { CellModule } from './cells/cell.module';
 
 @Module({
   imports: [
@@ -32,29 +34,31 @@ import { EducationModule } from './educations/education.module';
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST || 'localhost',  
-      port: parseInt(process.env.DB_PORT || '5432'),  
-      username: process.env.DB_USERNAME || 'postgres',        
-      password: process.env.DB_PASSWORD || '123456789',  
-      database: process.env.DB_DATABASE || 'reuniones',  
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432'),
+      username: process.env.DB_USERNAME || 'postgres',
+      password: process.env.DB_PASSWORD || '123456789',
+      database: process.env.DB_DATABASE || 'reuniones',
       entities: [
         ClassPerson, ClassEducation, ClassTerritory, ClassUserType,
-        ClassCell, ClassCellsPersons, ClassTitle,
+        ClassCell, ClassCellsPersons, ClassMeetingTitles,
         ClassMeetingPlace, ClassMeeting, ClassAttendanceType,
-        ClassAttendance, ClassCellType, ClassUser, ClassMemberType, 
+        ClassAttendance, ClassCellType, ClassUser, ClassMemberType,
         ClassMeetingDetail, ClassPredeterminedMeetingPlace, ClassSpecialActivity
       ],
       synchronize: false,  // ← MANTENIDO: Bueno para prod; pon true solo en dev
       // autoLoadEntities: true,  // Opcional: Si quieres auto-cargar más entities sin listar
     }),
 
-    AuthModule,  
-    PersonModule, 
+    AuthModule,
+    PersonModule,
     OptionsModule,
     UserModule,
     EducationModule,
+    MeetingPlacesModule,
+    CellModule,
   ],
-  controllers: [],  
+  controllers: [],
   providers: [],
 })
 export class AppModule { }

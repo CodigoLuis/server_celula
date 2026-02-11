@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards, Query } from '@nestjs/common';
 import { OptionsService } from './options.service';
 import { AuthJwtGuard } from '../authJWT/auth_jwt.guard';
 
@@ -18,6 +18,41 @@ export class OptionsController {
     async getTerritories() {
         const territories = await this.optionsService.optionsTerritory();
         return { data: territories, count: territories.length };
+    }
+
+    @Get('cell-type')
+    @UseGuards(AuthJwtGuard)
+    async getCellType() {
+        const cellType = await this.optionsService.optionsCellType();
+        return { data: cellType, count: cellType.length };
+    }
+
+    @Get('meeting-place')
+    @UseGuards(AuthJwtGuard)
+    async getMeetingPlace() {
+        const meetingPlace = await this.optionsService.optionsMeetingPlace();
+        return { data: meetingPlace, count: meetingPlace.length };
+    }
+
+    @Get('user')
+    @UseGuards(AuthJwtGuard)
+    async optionsUser(@Query('territoryId') territoryId: number) {
+        const user = await this.optionsService.optionsUser(territoryId);
+        return { data: user, count: user.length };
+    }
+
+    @Get('memberType')
+    @UseGuards(AuthJwtGuard)
+    async getMemberType() {
+        const memberType = await this.optionsService.optionsMemberType();
+        return { data: memberType, count: memberType.length };
+    } 
+
+    @Get('cell')
+    @UseGuards(AuthJwtGuard)
+    async optionsCell(@Query('territoryId') territoryId: number) {
+        const user = await this.optionsService.optionsCells(territoryId);
+        return { data: user, count: user.length };
     }
 
 }

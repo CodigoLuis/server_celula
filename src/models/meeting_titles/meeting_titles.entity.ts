@@ -13,8 +13,8 @@ import {
   PrimaryGeneratedColumn, // Necesario para el 'id' serial
 } from 'typeorm';
 
-@Entity('titles')
-export class ClassTitle {
+@Entity('meeting_titles')
+export class ClassMeetingTitles {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -30,10 +30,10 @@ export class ClassTitle {
   @UpdateDateColumn({ name: 'updated_at', nullable: true })
   updatedAt?: Date;
 
-  @ManyToOne(() => ClassUser, (user) => user.titles, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => ClassUser, (user) => user.meetingTitles, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'user_id' })
   user: ClassUser;
 
-  @OneToMany(() => ClassMeeting, (meeting) => meeting.title)
+  @OneToMany(() => ClassMeeting, (meeting) => meeting.meetingTitles)
   meetings?: ClassMeeting[];
 }
